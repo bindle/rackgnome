@@ -17,6 +17,7 @@
 /*
  *  System:        eagle.anc.ak
  *  Scope:         ISP
+ *  Status:        Pre-production
  *  OS:            Linux/Slackware
  *  OS Version:    3.8.4/14.0
  *  Installed:     2013/09/28 by syzdek
