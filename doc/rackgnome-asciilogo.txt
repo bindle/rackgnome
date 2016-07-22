@@ -1,0 +1,23 @@
+  _________________
+  | |88888888888| |
+  |---------------|
+  |.|   [1;31m^[0m       |.|
+  |.|  [1;31m/ \[0m      |.|
+  |.| [1;31m/___\[0m     |.|       Rack Gnome
+  |---------------|       Network Management Framework
+  | | oooo  ::: | |       Version X.X.X.gxxxxxxx
+  |---------------|
+  |.|           |.|       * Asset Management
+  |---------------|       * Command Automation
+  | | [][][][][]| |       * Space and Power Planning
+  |---------------|       * Monitoring Autoconfiguration
+  | | ::: ||||||| |
+  | |     ||||||| |       http://www.rackgnome.org/
+  |---------------|
+  | | ~~~   ... | |       Written by David M. Syzdek
+  |---------------|
+  | | ... ||||||| |
+  |---------------|
+  |.|           |.|
+  |.|           |.|
+__|_|___________|_|__
