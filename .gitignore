@@ -10,8 +10,10 @@
 /INSTALL
 /Makefile
 /Makefile.in
+/autoscan.log
 /build/
 /build-aux/git-package-version
+/configure.scan
 /libtool
 /rackgnome-*.tar.*
 /rackgnome-*.zip
