@@ -55,12 +55,18 @@ DEFS					=
 
 # automake targets
 check_PROGRAMS				=
-doc_DATA				= README COPYING ChangeLog AUTHORS
-include_HEADERS				=
+doc_DATA				= AUTHORS \
+					  COPYING \
+					  ChangeLog \
+					  INSTALL \
+					  NEWS \
+					  README
+include_HEADERS				= include/rackgnome.h
 lib_LTLIBRARIES				=
 man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
+noinst_LIBRARIES			= lib/librgutil.a
 noinst_HEADERS				=
 noinst_PROGRAMS				=
 bin_PROGRAMS				=
@@ -75,7 +81,7 @@ BUILT_SOURCES				=
 TESTS					=
 XFAIL_TESTS				=
 EXTRA_MANS				=
-EXTRA_DIST				=
+EXTRA_DIST				= lib/librgutil/librgutil.sym
 CLEANFILES				= \
 					  $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -88,6 +94,20 @@ CLEANFILES				= \
 					  @PACKAGE_TARNAME@-*.txz \
 					  @PACKAGE_TARNAME@-*.zip
 DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings
+
+
+# macros for lib/librgutil.a
+lib_librgutil_a_DEPENDENCIES		= Makefile lib/librgutil/librgutil.sym
+lib_librgutil_a_LDFLAGS			= -rpath'$(libdir)'\
+					  -version-info $(LIB_VERSION_INFO) \
+					  $(AM_LDFLAGS) \
+					  -export-symbols $(srcdir)/lib/librgutil/librgutil.sym
+lib_librgutil_a_SOURCES			= \
+					  include/rackgnome.h \
+					  include/rgutil.h \
+					  lib/librgutil/librgutil.h \
+					  lib/librgutil/timer.c \
+					  lib/librgutil/timer.h
 
 
 # Makefile includes
