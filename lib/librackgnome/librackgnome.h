@@ -59,8 +59,9 @@
 #include <libkern/OSAtomic.h>
 #endif
 
-#include <rgutil.h>
+#include <rackgnome.h>
 #include <pthread.h>
+#include <assert.h>
 
 
 #endif /* Header_h */

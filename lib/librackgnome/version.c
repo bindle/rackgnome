@@ -31,7 +31,7 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#include "timer.h"
+#include "version.h"
 
 ///////////////
 //           //
@@ -42,21 +42,36 @@
 #pragma mark - Headers
 #endif
 
-#include <time.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <inttypes.h>
 
-#ifdef __MACH__
-#include <mach/clock.h>
-#include <mach/mach.h>
+
+/////////////////
+//             //
+//  Variables  //
+//             //
+/////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Variables
 #endif
 
+const struct rackgnome_version rackgnome_version_data =
+{
+   LIB_VERSION_CURRENT,
+   LIB_VERSION_REVISION,
+   LIB_VERSION_AGE,
 
-#ifndef CLOCK_MONOTONIC_RAW
-#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-#endif
+   GIT_PACKAGE_MAJOR,
+   GIT_PACKAGE_MINOR,
+   GIT_PACKAGE_PATCH,
+   GIT_PACKAGE_VERSION_NUMBER,
+
+   LIB_VERSION_INFO,
+   LIB_RELEASE_INFO,
+
+   GIT_PACKAGE_VERSION,
+   GIT_PACKAGE_VERSION_BUILD,
+   GIT_PACKAGE_BUILD
+};
+
 
 
 /////////////////
@@ -68,21 +83,10 @@
 #pragma mark - Functions
 #endif
 
-void rgutil_clock_gettime(struct timespec * ts)
+void rackgnome_version(rackgnomever const ** ver)
 {
-#ifdef __MACH__
-   clock_serv_t    cclock;
-   mach_timespec_t mts;
-
-   host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
-   clock_get_time(cclock, &mts);
-   mach_port_deallocate(mach_task_self(), cclock);
-
-   ts->tv_sec  = mts.tv_sec;
-   ts->tv_nsec = mts.tv_nsec;
-#else
-  clock_gettime(CLOCK_REALTIME, ts);
-#endif
+   assert(ver != NULL);
+   *ver = &rackgnome_version_data;
    return;
 }
 

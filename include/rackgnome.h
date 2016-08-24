@@ -45,6 +45,8 @@
 #pragma mark - Headers
 #endif
 
+#include <inttypes.h>
+
 
 ///////////////////
 //               //
@@ -110,6 +112,27 @@
 #endif
 
 
+typedef struct rackgnome_version rackgnomever;
+struct rackgnome_version
+{
+   const uint64_t   api_current;
+   const uint64_t   api_revision;
+   const uint64_t   api_age;
+
+   const uint64_t   pkg_major;
+   const uint64_t   pkg_minor;
+   const uint64_t   pkg_patch;
+   const double     pkg_version_number;
+
+   const char     * api_version_info;
+   const char     * api_release_info;
+
+   const char     * pkg_version;
+   const char     * pkg_version_build;
+   const char     * pkg_build;
+};
+
+
 /////////////////
 //             //
 //  Variables  //
@@ -128,6 +151,8 @@
 #ifdef __RACKGNOME_PMARK
 #pragma mark - Prototypes
 #endif
+
+_RACKGNOME_F void rackgnome_version(rackgnomever const ** ver);
 
 
 #endif /* end of header */

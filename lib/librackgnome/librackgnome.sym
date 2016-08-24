@@ -34,6 +34,6 @@
 #   lib/librgutil/librgutil.sym - exported symbols
 #
 # lib/libtallyutil/conf.c
-rgutil_clock_gettime
+rackgnome_version
 #
 # end of symbol export file

@@ -62,7 +62,7 @@ doc_DATA				= AUTHORS \
 					  NEWS \
 					  README
 include_HEADERS				= include/rackgnome.h
-lib_LTLIBRARIES				=
+lib_LTLIBRARIES				= lib/librackgnome.la
 man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
@@ -81,7 +81,8 @@ BUILT_SOURCES				=
 TESTS					=
 XFAIL_TESTS				=
 EXTRA_MANS				=
-EXTRA_DIST				= lib/librgutil/librgutil.sym
+EXTRA_DIST				= lib/librackgnome/librackgnome.sym \
+					  lib/librgutil/librgutil.sym
 CLEANFILES				= \
 					  $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
@@ -96,8 +97,22 @@ CLEANFILES				= \
 DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings
 
 
+# macros for lib/librackgnome.la
+lib_librackgnome_la_DEPENDENCIES	= Makefile lib/librackgnome/librackgnome.sym config.h
+lib_librackgnome_la_LDFLAGS		= -rpath'$(libdir)'\
+					  -version-info $(LIB_VERSION_INFO) \
+					  $(AM_LDFLAGS) \
+					  -export-symbols $(srcdir)/lib/librackgnome/librackgnome.sym
+lib_librackgnome_la_SOURCES		= \
+					  include/rackgnome.h \
+					  include/rgutil.h \
+					  lib/librackgnome/librackgnome.h \
+					  lib/librackgnome/version.c \
+					  lib/librackgnome/version.h
+
+
 # macros for lib/librgutil.a
-lib_librgutil_a_DEPENDENCIES		= Makefile lib/librgutil/librgutil.sym
+lib_librgutil_a_DEPENDENCIES		= Makefile lib/librgutil/librgutil.sym config.h
 lib_librgutil_a_LDFLAGS			= -rpath'$(libdir)'\
 					  -version-info $(LIB_VERSION_INFO) \
 					  $(AM_LDFLAGS) \
