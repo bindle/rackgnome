@@ -85,7 +85,7 @@ const rackgnome_ver rgutil_version_data =
 #pragma mark - Functions
 #endif
 
-void rgutil_version(rackgnome_ver const ** verp)
+void rgutil_version(const rackgnome_ver ** verp)
 {
    assert(verp != NULL);
    *verp = &rgutil_version_data;
@@ -93,7 +93,7 @@ void rgutil_version(rackgnome_ver const ** verp)
 }
 
 
-void rgutil_print_version(const char * prog_name)
+void rgutil_version_print(const char * prog_name)
 {
    const rackgnome_ver * libver;
    const rackgnome_ver * ver;

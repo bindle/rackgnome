@@ -117,7 +117,7 @@ int main(int argc, char * argv[])
          return(0);
 
          case 'V':
-         rgutil_print_version(PROGRAM_NAME);
+         rgutil_version_print(PROGRAM_NAME);
          return(0);
 
          case '?':
@@ -131,7 +131,7 @@ int main(int argc, char * argv[])
       };
    };
 
-   rgutil_print_version(PROGRAM_NAME);
+   rgutil_version_print(PROGRAM_NAME);
 
    return(0);
 }
