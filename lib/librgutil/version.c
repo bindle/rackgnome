@@ -72,26 +72,26 @@ void rgutil_print_version(const char * prog_name)
          "  |.|   [1;31m^[0m       |.|\n"
          "  |.|  [1;31m/ \\[0m      |.|       Rack Gnome\n"
          "  |.| [1;31m/___\\[0m     |.|       Network Management Framework\n"
-         "  |---------------|       Version     %s\n"
-         "  | | oooo  ::: | |       Goldogrin   %s (%s)\n"
-         "  |---------------|       Library API %s\n"
-         "  |.|           |.|\n"
-         "  |---------------|       * Asset Management\n"
-         "  | | [][][][][]| |       * Command Automation\n"
-         "  |---------------|       * Space and Power Planning\n"
-         "  | | ::: ||||||| |       * Monitoring Autoconfiguration\n"
-         "  | |     ||||||| |\n"
-         "  |---------------|       http://www.rackgnome.org/\n"
-         "  | | ~~~   ... | |\n"
-         "  |---------------|       Written by David M. Syzdek\n"
-         "  | | ... ||||||| |\n"
+         "  |---------------|\n"
+         "  | | oooo  ::: | |       Version     %s\n"
+         "  |---------------|       Goldogrin   %s\n"
+         "  |.|           |.|       Library API %s\n"
+         "  |---------------|\n"
+         "  | | [][][][][]| |       * Asset Management\n"
+         "  |---------------|       * Command Automation\n"
+         "  | | ::: ||||||| |       * Space and Power Planning\n"
+         "  | |     ||||||| |       * Monitoring Autoconfiguration\n"
+         "  |---------------|\n"
+         "  | | ~~~   ... | |       http://www.rackgnome.org/\n"
+         "  |---------------|\n"
+         "  | | ... ||||||| |       Written by David M. Syzdek\n"
          "  |---------------|\n"
          "  |.|           |.|\n"
          "  |.|           |.|\n"
          "__|_|___________|_|__\n"
       ),
       libver->pkg_version_build,
-      libver->api_version_info, libver->pkg_version_build,
+      libver->api_version_info,
       libver->api_version_info
    );
 
