@@ -60,27 +60,6 @@
 #endif
 
 
-typedef struct rgutil_pkg_info rgutil_pkginfo;
-struct rgutil_pkg_info
-{
-   const uint64_t   api_current;
-   const uint64_t   api_revision;
-   const uint64_t   api_age;
-
-   const char     * api_version_info;
-   const char     * api_release_info;
-
-   const uint64_t   pkg_major;
-   const uint64_t   pkg_minor;
-   const uint64_t   pkg_patch;
-   const double     pkg_version_number;
-
-   const char     * pkg_version;
-   const char     * pkg_version_build;
-   const char     * pkg_build;
-};
-
-
 //////////////////
 //              //
 //  Prototypes  //
