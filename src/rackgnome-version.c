@@ -113,7 +113,7 @@ int main(int argc, char * argv[])
          return(0);
 
          case 'T':
-         rgutil_print_version_terse(PROGRAM_NAME);;
+         rgutil_version_print_terse(PROGRAM_NAME);;
          return(0);
 
          case 'V':

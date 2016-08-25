@@ -138,7 +138,7 @@ void rgutil_version_print(const char * prog_name)
 }
 
 
-void rgutil_print_version_terse(const char * prog_name)
+void rgutil_version_print_terse(const char * prog_name)
 {
    assert(prog_name != NULL);
 
