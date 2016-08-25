@@ -48,12 +48,50 @@
 
 /////////////////
 //             //
+//  Variables  //
+//             //
+/////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Variables
+#endif
+
+const rackgnome_ver rgutil_version_data =
+{
+   LIB_VERSION_CURRENT,
+   LIB_VERSION_REVISION,
+   LIB_VERSION_AGE,
+
+   LIB_VERSION_INFO,
+   LIB_RELEASE_INFO,
+
+   GIT_PACKAGE_MAJOR,
+   GIT_PACKAGE_MINOR,
+   GIT_PACKAGE_PATCH,
+
+   GIT_PACKAGE_VERSION_NUMBER,
+
+   GIT_PACKAGE_VERSION,
+   GIT_PACKAGE_VERSION_BUILD,
+   GIT_PACKAGE_BUILD
+};
+
+
+/////////////////
+//             //
 //  Functions  //
 //             //
 /////////////////
 #ifdef __RACKGNOME_PMARK
 #pragma mark - Functions
 #endif
+
+void rgutil_version(rackgnome_ver const ** verp)
+{
+   assert(verp != NULL);
+   *verp = &rgutil_version_data;
+   return;
+}
+
 
 void rgutil_print_version(const char * prog_name)
 {
@@ -63,6 +101,7 @@ void rgutil_print_version(const char * prog_name)
    assert(prog_name != NULL);
 
    rackgnome_version(&libver);
+   rgutil_version(&ver);
 
    printf(
       (
@@ -90,7 +129,7 @@ void rgutil_print_version(const char * prog_name)
          "  |.|           |.|\n"
          "__|_|___________|_|__\n"
       ),
-      libver->pkg_version_build,
+      ver->pkg_version_build,
       libver->api_version_info,
       libver->api_version_info
    );
