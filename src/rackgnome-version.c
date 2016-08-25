@@ -100,6 +100,8 @@ int main(int argc, char * argv[])
       { NULL,            0,           0, 0  }
    };
 
+   rgutil_version_assert();
+
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
    {
       switch(c)

@@ -44,6 +44,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 
 
 /////////////////
@@ -89,6 +90,44 @@ void rgutil_version(const rackgnome_ver ** verp)
 {
    assert(verp != NULL);
    *verp = &rgutil_version_data;
+   return;
+}
+
+
+void rgutil_version_assert(void)
+{
+   const rackgnome_ver * libver;
+   const rackgnome_ver * ver;
+
+   rackgnome_version(&libver);
+   rgutil_version(&ver);
+
+   assert(libver->api_version_info  != NULL);
+   assert(libver->api_release_info  != NULL);
+   assert(libver->pkg_version_build != NULL);
+   assert(libver->pkg_version       != NULL);
+   assert(libver->pkg_build         != NULL);
+
+   assert(ver->api_version_info     != NULL);
+   assert(ver->api_release_info     != NULL);
+   assert(ver->pkg_version_build    != NULL);
+   assert(ver->pkg_version          != NULL);
+   assert(ver->pkg_build            != NULL);
+
+   assert(libver->api_current          == ver->api_current);
+   assert(libver->api_revision         == ver->api_revision);
+   assert(libver->api_age              == ver->api_age);
+   assert(libver->pkg_major            == ver->pkg_major);
+   assert(libver->pkg_minor            == ver->pkg_minor);
+   assert(libver->pkg_patch            == ver->pkg_patch);
+   assert(libver->pkg_version_number   == ver->pkg_version_number);
+
+   assert( (!(strcmp(libver->api_version_info,  ver->api_version_info))) );
+   assert( (!(strcmp(libver->api_release_info,  ver->api_release_info))) );
+   assert( (!(strcmp(libver->pkg_version,       ver->pkg_version))) );
+   assert( (!(strcmp(libver->pkg_version_build, ver->pkg_version_build))) );
+   assert( (!(strcmp(libver->pkg_build,         ver->pkg_build))) );
+
    return;
 }
 

@@ -91,6 +91,7 @@ struct rgutil_pkg_info
 #endif
 
 _RACKGNOME_F void rgutil_version(rackgnome_ver const ** verp);
+_RACKGNOME_F void rgutil_version_assert(void);
 _RACKGNOME_F void rgutil_version_print(const char * prog_name);
 _RACKGNOME_F void rgutil_version_print_terse(const char * prog_name);
 _RACKGNOME_F void rgutil_clock_gettime(struct timespec * ts);

@@ -38,6 +38,7 @@ rgutil_clock_gettime
 #
 # lib/rgutil/timer.c
 rgutil_version
+rgutil_version_assert
 rgutil_version_print
 rgutil_version_print_terse
 #
