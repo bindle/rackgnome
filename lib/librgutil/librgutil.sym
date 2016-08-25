@@ -38,7 +38,7 @@ rgutil_clock_gettime
 #
 # lib/rgutil/timer.c
 rgutil_version
-rgutil_print_version
-rgutil_print_version_terse
+rgutil_version_print
+rgutil_version_print_terse
 #
 # end of symbol export file
