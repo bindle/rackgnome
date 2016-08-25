@@ -31,7 +31,7 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#include "daemon.h"
+#include "version.h"
 
 
 ///////////////
@@ -43,6 +43,8 @@
 #pragma mark - Headers
 #endif
 
+#include <stdio.h>
+
 
 /////////////////
 //             //
@@ -52,6 +54,66 @@
 #ifdef __RACKGNOME_PMARK
 #pragma mark - Functions
 #endif
+
+void rgutil_print_version(const char * prog_name)
+{
+   const rackgnome_ver * libver;
+   const rackgnome_ver * ver;
+
+   assert(prog_name != NULL);
+
+   rackgnome_version(&libver);
+
+   printf(
+      (
+         "  _________________\n"
+         "  | |88888888888| |\n"
+         "  |---------------|\n"
+         "  |.|   [1;31m^[0m       |.|\n"
+         "  |.|  [1;31m/ \\[0m      |.|       Rack Gnome\n"
+         "  |.| [1;31m/___\\[0m     |.|       Network Management Framework\n"
+         "  |---------------|       Version     %s\n"
+         "  | | oooo  ::: | |       Goldogrin   %s (%s)\n"
+         "  |---------------|       Library API %s\n"
+         "  |.|           |.|\n"
+         "  |---------------|       * Asset Management\n"
+         "  | | [][][][][]| |       * Command Automation\n"
+         "  |---------------|       * Space and Power Planning\n"
+         "  | | ::: ||||||| |       * Monitoring Autoconfiguration\n"
+         "  | |     ||||||| |\n"
+         "  |---------------|       http://www.rackgnome.org/\n"
+         "  | | ~~~   ... | |\n"
+         "  |---------------|       Written by David M. Syzdek\n"
+         "  | | ... ||||||| |\n"
+         "  |---------------|\n"
+         "  |.|           |.|\n"
+         "  |.|           |.|\n"
+         "__|_|___________|_|__\n"
+      ),
+      libver->pkg_version_build,
+      libver->api_version_info, libver->pkg_version_build,
+      libver->api_version_info
+   );
+
+   return;
+}
+
+
+void rgutil_print_version_terse(const char * prog_name)
+{
+   assert(prog_name != NULL);
+
+   const rackgnome_ver * libver;
+
+   rackgnome_version(&libver);
+
+   printf("%s (%s) %s\n", prog_name, PACKAGE_TARNAME, GIT_PACKAGE_VERSION_BUILD);
+   printf("librackgnome (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_version_build, libver->api_version_info);
+   printf("goldogrin (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_version_build, libver->api_version_info);
+   printf("\n");
+
+   return;
+}
 
 
 /* end of source */

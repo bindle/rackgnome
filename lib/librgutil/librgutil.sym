@@ -33,7 +33,11 @@
 #
 #   lib/librgutil/librgutil.sym - exported symbols
 #
-# lib/libtallyutil/conf.c
+# lib/rgutil/timer.c
 rgutil_clock_gettime
+#
+# lib/rgutil/timer.c
+rgutil_print_version
+rgutil_print_version_terse
 #
 # end of symbol export file

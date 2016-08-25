@@ -47,10 +47,16 @@ AM_LDFLAGS				=
 AM_CFLAGS				= -O2 $(CFLAGS_WARNINGS)
 AM_CXXFLAGS				= -O2 @AM_CXXFLAGS@
 AM_OBJCFLAGS				= -O2 @AM_OBJCFLAGS@
-AM_CPPFLAGS				= -O2 -UPMARK -DHAVE_CONFIG_H=1 -I$(top_builddir)/include -I$(top_srcdir)/include -DSYSCONFDIR="\"$(sysconfdir)\""
+AM_CPPFLAGS				= -O2 -UPMARK -DHAVE_CONFIG_H=1 \
+					  -I$(top_builddir)/include \
+					  -I$(top_srcdir)/include \
+					  -DSYSCONFDIR="\"$(sysconfdir)\""
 ACLOCAL_AMFLAGS				= -I m4 -W all -W error
 AM_MAKEINFOFLAGS                        = --no-split
 DEFS					=
+LDADD					= $(lib_LTLIBRARIES) \
+					  $(noinst_LTLIBRARIES) \
+					  $(noinst_LIBRARIES)
 
 
 # automake targets
@@ -67,9 +73,9 @@ man_MANS				=
 info_TEXINFOS				=
 noinst_LTLIBRARIES			=
 noinst_LIBRARIES			= lib/librgutil.a
-noinst_HEADERS				=
+noinst_HEADERS				= include/rgutil.h
 noinst_PROGRAMS				=
-bin_PROGRAMS				=
+bin_PROGRAMS				= src/rackgnome-version
 bin_SCRIPTS				=
 pkgdata_DATA				=
 sbin_SCRIPTS				=
@@ -105,7 +111,6 @@ lib_librackgnome_la_LDFLAGS		= -rpath'$(libdir)'\
 					  -export-symbols $(srcdir)/lib/librackgnome/librackgnome.sym
 lib_librackgnome_la_SOURCES		= \
 					  include/rackgnome.h \
-					  include/rgutil.h \
 					  lib/librackgnome/librackgnome.h \
 					  lib/librackgnome/version.c \
 					  lib/librackgnome/version.h
@@ -118,11 +123,22 @@ lib_librgutil_a_LDFLAGS			= -rpath'$(libdir)'\
 					  $(AM_LDFLAGS) \
 					  -export-symbols $(srcdir)/lib/librgutil/librgutil.sym
 lib_librgutil_a_SOURCES			= \
-					  include/rackgnome.h \
 					  include/rgutil.h \
 					  lib/librgutil/librgutil.h \
+					  lib/librgutil/daemon.c \
+					  lib/librgutil/daemon.h \
 					  lib/librgutil/timer.c \
-					  lib/librgutil/timer.h
+					  lib/librgutil/timer.h \
+					  lib/librgutil/version.c \
+					  lib/librgutil/version.h
+
+
+# macros for src/rackgnome-version
+src_rackgnome_version_DEPENDENCIES	= Makefile \
+					  $(noinst_LIBRARIES)
+src_rackgnome_version_SOURCES		= $(include_HEADERS) \
+					  $(noinst_HEADERS) \
+					  src/rackgnome-version.c
 
 
 # Makefile includes

@@ -31,7 +31,8 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#include "daemon.h"
+#ifndef __LIBRGUTIL_USAGE_H
+#define __LIBRGUTIL_USAGE_H 1
 
 
 ///////////////
@@ -43,15 +44,63 @@
 #pragma mark - Headers
 #endif
 
+#include "librgutil.h"
 
-/////////////////
-//             //
-//  Functions  //
-//             //
-/////////////////
+
+///////////////////
+//               //
+//  Definitions  //
+//               //
+///////////////////
 #ifdef __RACKGNOME_PMARK
-#pragma mark - Functions
+#pragma mark - Definitions
+#endif
+
+#ifndef PACKAGE_TARNAME
+#   define PACKAGE_TARNAME "rackgnome"
+#endif
+
+#ifndef GIT_PACKAGE_MAJOR
+#   define GIT_PACKAGE_MAJOR 0
+#endif
+#ifndef GIT_PACKAGE_MINOR
+#   define GIT_PACKAGE_MINOR 0
+#endif
+#ifndef GIT_PACKAGE_PATCH
+#   define GIT_PACKAGE_PATCH 0
+#endif
+#ifndef GIT_PACKAGE_BUILD
+#   define GIT_PACKAGE_BUILD ""
+#endif
+#ifndef GIT_PACKAGE_BUILD
+#   define GIT_PACKAGE_VERSION_NUMBER 0.000000
+#endif
+#ifndef GIT_PACKAGE_VERSION
+#   define GIT_PACKAGE_VERSION "0.0.0"
+#endif
+#ifndef GIT_PACKAGE_BUILD
+#   define GIT_PACKAGE_BUILD "gzzzzzz"
+#endif
+#ifndef GIT_PACKAGE_VERSION_BUILD
+#   define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
 #endif
 
 
-/* end of source */
+#ifndef LIB_VERSION_CURRENT
+#define LIB_VERSION_CURRENT  0
+#endif
+#ifndef LIB_VERSION_REVISION
+#define LIB_VERSION_REVISION 0xffffffff
+#endif
+#ifndef LIB_VERSION_AGE
+#define LIB_VERSION_AGE      0xffffffff
+#endif
+#ifndef LIB_VERSION_INFO
+#define LIB_VERSION_INFO "4294967295:0:0"
+#endif
+#ifndef LIB_RELEASE_INFO
+#define LIB_RELEASE_INFO "4294967295:0:0"
+#endif
+
+
+#endif /* daemon_h */

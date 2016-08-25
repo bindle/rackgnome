@@ -33,7 +33,7 @@
 #
 #   lib/librgutil/librgutil.sym - exported symbols
 #
-# lib/libtallyutil/conf.c
+# lib/libtallyutil/version.c
 rackgnome_version
 #
 # end of symbol export file

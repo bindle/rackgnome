@@ -31,8 +31,8 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#ifndef __LIBRGUTIL_TIMER_H
-#define __LIBRGUTIL_TIMER_H 1
+#ifndef __LIBRACKGNOME_VERSION_H
+#define __LIBRACKGNOME_VERSION_H 1
 
 
 ///////////////
@@ -68,6 +68,18 @@
 #ifndef GIT_PACKAGE_BUILD
 #   define GIT_PACKAGE_BUILD ""
 #endif
+#ifndef GIT_PACKAGE_BUILD
+#   define GIT_PACKAGE_VERSION_NUMBER 0.000000
+#endif
+#ifndef GIT_PACKAGE_VERSION
+#   define GIT_PACKAGE_VERSION "0.0.0"
+#endif
+#ifndef GIT_PACKAGE_BUILD
+#   define GIT_PACKAGE_BUILD "gzzzzzz"
+#endif
+#ifndef GIT_PACKAGE_VERSION_BUILD
+#   define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
+#endif
 
 
 #ifndef LIB_VERSION_CURRENT
@@ -80,10 +92,10 @@
 #define LIB_VERSION_AGE      0xffffffff
 #endif
 #ifndef LIB_VERSION_INFO
-#define LIB_VERSION_INFO NULL
+#define LIB_VERSION_INFO "4294967295:0:0"
 #endif
 #ifndef LIB_RELEASE_INFO
-#define LIB_RELEASE_INFO NULL
+#define LIB_RELEASE_INFO "4294967295:0:0"
 #endif
 
 

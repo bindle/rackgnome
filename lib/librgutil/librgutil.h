@@ -61,6 +61,7 @@
 
 #include <rgutil.h>
 #include <pthread.h>
+#include <assert.h>
 
 
 #endif /* Header_h */

@@ -31,7 +31,9 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#include "version.h"
+#define __RACKGNOME_VERSION_C 1
+#undef __RACKGNOME_PMARK
+
 
 ///////////////
 //           //
@@ -42,37 +44,39 @@
 #pragma mark - Headers
 #endif
 
+#include <stdio.h>
+#include <getopt.h>
+
+#include <rackgnome.h>
+#include <rgutil.h>
 
 
-/////////////////
-//             //
-//  Variables  //
-//             //
-/////////////////
+///////////////////
+//               //
+//  Definitions  //
+//               //
+///////////////////
 #ifdef __RACKGNOME_PMARK
-#pragma mark - Variables
+#pragma mark - Definitions
 #endif
 
-const rackgnome_ver rackgnome_version_data =
-{
-   LIB_VERSION_CURRENT,
-   LIB_VERSION_REVISION,
-   LIB_VERSION_AGE,
+#ifndef PROGRAM_NAME
+#define   PROGRAM_NAME "rackgnome-version"
+#endif
 
-   LIB_VERSION_INFO,
-   LIB_RELEASE_INFO,
 
-   GIT_PACKAGE_MAJOR,
-   GIT_PACKAGE_MINOR,
-   GIT_PACKAGE_PATCH,
+//////////////////
+//              //
+//  Prototypes  //
+//              //
+//////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Prototypes
+#endif
 
-   GIT_PACKAGE_VERSION_NUMBER,
+int main(int argc, char * argv[]);
 
-   GIT_PACKAGE_VERSION,
-   GIT_PACKAGE_VERSION_BUILD,
-   GIT_PACKAGE_BUILD
-};
-
+void usage(void);
 
 
 /////////////////
@@ -84,12 +88,64 @@ const rackgnome_ver rackgnome_version_data =
 #pragma mark - Functions
 #endif
 
-void rackgnome_version(rackgnome_ver const ** verp)
+int main(int argc, char * argv[])
 {
-   assert(verp != NULL);
-   *verp = &rackgnome_version_data;
+   int                  c;
+   int                  opt_index;
+   static char          short_opt[] = "46hm:t:TUV";
+   static struct option long_opt[] =
+   {
+      { "help",          no_argument, 0, 'h'},
+      { "version",       no_argument, 0, 'V'},
+      { NULL,            0,           0, 0  }
+   };
+
+   while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
+   {
+      switch(c)
+      {
+         case -1:	/* no more arguments */
+         case 0:	/* long options toggles */
+         break;
+
+         case 'h':
+         usage();
+         return(0);
+
+         case 'T':
+         rgutil_print_version_terse(PROGRAM_NAME);;
+         return(0);
+
+         case 'V':
+         rgutil_print_version(PROGRAM_NAME);
+         return(0);
+
+         case '?':
+         fprintf(stderr, "Try `%s --help' for more information.\n", argv[0]);
+         return(1);
+
+         default:
+         fprintf(stderr, "%s: unrecognized option `--%c'\n", argv[0], c);
+         fprintf(stderr, "Try `%s --help' for more information.\n", argv[0]);
+         return(1);
+      };
+   };
+
+   rgutil_print_version(PROGRAM_NAME);
+
+   return(0);
+}
+
+
+void usage(void)
+{
+   printf("Usage: %s [OPTIONS]\n", PROGRAM_NAME);
+   printf("Options:\n");
+   printf("  -h, --help                print this help and exit\n");
+   printf("  -V, --version             print version number and exit\n");
+   printf("  -T, --version-terse       print version number and exit\n");
+   printf("\n");
    return;
 }
 
 /* end of source */
-
