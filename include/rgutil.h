@@ -60,6 +60,63 @@
 #endif
 
 
+typedef struct rgutil_scheduler rgscheduler;
+typedef struct rgutil_time_slice rgtimeslice;
+typedef struct rgutil_job_slot rgjobslot;
+
+
+//
+//              Rack Gnome Scheduler/Time Slice Relationship
+//                         (timer uses nanseconds)
+//
+//           +-------+     +-------+     +-------+     +-------+
+//      /--> | slice | --> | slice | --> | slice | --> | slice | ---\
+//      |    +-------+     +-------+     +-------+     +-------+    |
+//      |                                                           |
+//  +-------+      scheduler is a `struct rgutil_scheduler`     +-------+
+//  | slice |      slice is a `struct rgutil_time_slice`        | slice |
+//  +-------+      job is a `struct rgutil_job_slot`            +-------+
+//      ^                                                           |
+//      |    +-------+     +-------+     +-------+     +-------+    |
+//      \--- | slice | <-- | slice | <-- | slice | <-- | slice | <--/
+//           +-------+     +-------+     +-------+     +-------+
+//                                                         ^
+//  +-------+     +-----+-----+-----+                      |
+//  | slice | --> | job | job | job |                +-----------+
+//  +-------+     |-----|-----|-----|                | scheduler |
+//                | job | job | job |                +-----------+
+//                |-----|-----|-----|
+//                | job | job | job |
+//                +-----+-----+-----+
+//
+
+
+struct rgutil_scheduler
+{
+   struct timespec     now;      // time when slice was last incremented
+   size_t              slices;   // number of time slices in ring
+   size_t              slots;    // max number of queued jobs per slice
+   long                interval; // length of each time slice in nanoseconds (1e-9 seconds)
+   rgtimeslice       * ring;     // references current time slice in ring
+};
+
+
+struct rgutil_time_slice
+{
+   size_t           job_len;     // number of job slots currently used
+   rgtimeslice    * next;        // references next time slice
+   rgjobslot      * job_slots;   // array of slots
+};
+
+
+struct rgutil_job_slot
+{
+   uint64_t      job_type;
+   uint64_t      job_id;
+   void        * job_data;
+};
+
+
 //////////////////
 //              //
 //  Prototypes  //
