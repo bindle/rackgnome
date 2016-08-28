@@ -1,7 +1,8 @@
 #!/bin/sh
 #
-#   Secure Core Utilities
-#   Copyright (C) 2015 Bindle Binaries <syzdek@bindlebinaries.com>.
+#   Bindle Binaries Tools
+#   Copyright (c) 2014, 2016 Bindle Binaries
+#   All rights reserved.
 #
 #   @BINDLE_BINARIES_BSD_LICENSE_START@
 #
@@ -35,8 +36,8 @@
 #   autogen.sh - runs GNU Autotools to create build environment
 #
 
-AUTOGENNAME="`basename ${0}`" || exit $?
-SRCDIR=`dirname ${0}`
+AUTOGENNAME="`basename ${0}`" || exit 1
+SRCDIR="`dirname ${0}`"
 
 
 # check for required programs
@@ -59,16 +60,19 @@ if test -d ${SRCDIR}/.git || test -f ${SRCDIR}/.git;then
 fi
 
 
-# generates files for bindletools
-#${SRCDIR}/contrib/bindletools/autogen.sh || exit 1
-#echo "running ${0} ..."
+# symlinks Bindle Tools M4 macros
+if test -f ${SRCDIR}/contrib/bindletools/m4/bindle-gcc.m4;then
+   cd ${SRCDIR}/m4
+   rm -f ./bindle*.m4 || exit 1
+   ln -s ../contrib/bindletools/m4/bindle*.m4 ./
+   cd -
+fi
 
 
-# symlinks M4 macros
-cd ${SRCDIR}/m4
-rm -f ./bindle*.m4 || exit 1
-ln -s ../contrib/bindletools/m4/bindle*.m4 ./
-cd -
+# perform pre-hook
+if test -f ${SRCDIR}/build-aux/autogen-pre-hook.sh;then
+   . ${SRCDIR}/build-aux/autogen-pre-hook.sh
+fi
 
 
 # Performs some useful checks
@@ -81,6 +85,12 @@ autoreconf -v -i -f -Wall \
    -m \
    ${SRCDIR} \
    || exit 1
+
+
+# perform post-hook
+if test -f ${SRCDIR}/build-aux/autogen-post-hook.sh;then
+   . ${SRCDIR}/build-aux/autogen-post-hook.sh
+fi
 
 
 # makes build directory
