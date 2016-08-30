@@ -31,8 +31,8 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#ifndef __LIBRGUTIL_USAGE_H
-#define __LIBRGUTIL_USAGE_H 1
+#ifndef __LIBRGUTIL_VERSION_H
+#define __LIBRGUTIL_VERSION_H 1
 
 
 ///////////////
