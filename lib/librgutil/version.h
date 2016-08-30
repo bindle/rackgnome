@@ -56,33 +56,35 @@
 #pragma mark - Definitions
 #endif
 
+
 #ifndef PACKAGE_TARNAME
-#   define PACKAGE_TARNAME "rackgnome"
+#define PACKAGE_TARNAME "rackgnome"
 #endif
 
+
 #ifndef GIT_PACKAGE_MAJOR
-#   define GIT_PACKAGE_MAJOR 0
+#define GIT_PACKAGE_MAJOR 0
 #endif
 #ifndef GIT_PACKAGE_MINOR
-#   define GIT_PACKAGE_MINOR 0
+#define GIT_PACKAGE_MINOR 0
 #endif
 #ifndef GIT_PACKAGE_PATCH
-#   define GIT_PACKAGE_PATCH 0
+#define GIT_PACKAGE_PATCH 0
 #endif
 #ifndef GIT_PACKAGE_BUILD
-#   define GIT_PACKAGE_BUILD ""
+#define GIT_PACKAGE_BUILD ""
 #endif
 #ifndef GIT_PACKAGE_VERSION_NUMBER
-#   define GIT_PACKAGE_VERSION_NUMBER 0.000000
+#define GIT_PACKAGE_VERSION_NUMBER 0.000000
 #endif
 #ifndef GIT_PACKAGE_VERSION
-#   define GIT_PACKAGE_VERSION "0.0.0"
+#define GIT_PACKAGE_VERSION "0.0.0"
 #endif
 #ifndef GIT_PACKAGE_BUILD
-#   define GIT_PACKAGE_BUILD "gzzzzzz"
+#define GIT_PACKAGE_BUILD "gzzzzzz"
 #endif
 #ifndef GIT_PACKAGE_VERSION_BUILD
-#   define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
+#define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
 #endif
 
 
