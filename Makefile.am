@@ -41,6 +41,10 @@ SUBDIRS					=
 DIST_SUBDIRS				=
 
 
+# directory locations
+pkgconfdir				= $(sysconfdir)/$(package_tarname)
+
+
 # Global flags
 AM_LIBS					=
 AM_LDFLAGS				=
@@ -75,8 +79,11 @@ noinst_LTLIBRARIES			=
 noinst_LIBRARIES			= lib/librgutil.a
 noinst_HEADERS				= include/rgutil.h
 noinst_PROGRAMS				=
-bin_PROGRAMS				= src/rackgnome-version
+bin_PROGRAMS				= \
+					  src/rackgnome \
+					  src/rackgnome-version
 bin_SCRIPTS				=
+pkgconf_DATA				= doc/conf/rackgnome.conf-example
 pkgdata_DATA				=
 sbin_SCRIPTS				=
 
@@ -87,13 +94,16 @@ BUILT_SOURCES				=
 TESTS					=
 XFAIL_TESTS				=
 EXTRA_MANS				=
-EXTRA_DIST				= lib/librackgnome/librackgnome.sym \
+EXTRA_DIST				= \
+					  doc/conf/rackgnome.conf-example.in \
+					  lib/librackgnome/librackgnome.sym \
 					  lib/librgutil/librgutil.sym
 CLEANFILES				= \
 					  $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
 					  config.h.in~ $(srcdir)/config.h.in~ \
 					  $(man_MANS) \
+					  $(pkgconf_DATA) \
 					  $(pkgdata_DATA) \
 					  $(bin_SCRIPTS) \
 					  $(sbin_SCRIPTS) \
@@ -125,12 +135,28 @@ lib_librgutil_a_LDFLAGS			= -rpath'$(libdir)'\
 lib_librgutil_a_SOURCES			= \
 					  include/rgutil.h \
 					  lib/librgutil/librgutil.h \
+					  lib/librgutil/conf.c \
+					  lib/librgutil/conf.h \
 					  lib/librgutil/daemon.c \
 					  lib/librgutil/daemon.h \
+					  lib/librgutil/file.c \
+					  lib/librgutil/file.h \
+					  lib/librgutil/logger.c \
+					  lib/librgutil/logger.h \
 					  lib/librgutil/timer.c \
 					  lib/librgutil/timer.h \
 					  lib/librgutil/version.c \
 					  lib/librgutil/version.h
+
+
+# macros for src/rackgnome-version
+src_rackgnome_DEPENDENCIES		= \
+					  $(lib_LTLIBRARIES) \
+					  $(noinst_LIBRARIES)
+src_rackgnome_SOURCES			= \
+					  $(include_HEADERS) \
+					  $(noinst_HEADERS) \
+					  src/client/main.c
 
 
 # macros for src/rackgnome-version
@@ -151,6 +177,9 @@ include $(srcdir)/@bindletools_srcdir@/build-aux/makefile-version.am
 
 # custom targets
 .PHONY:
+
+doc/conf/rackgnome.conf-example: Makefile doc/conf/rackgnome.conf-example.in
+	$(do_subst_dt)
 
 
 # local targets

@@ -48,6 +48,10 @@
 #include <rackgnome.h>
 
 #include <sys/time.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <grp.h>
+#include <stdarg.h>
 
 
 //////////////////
@@ -64,6 +68,30 @@ typedef struct rgutil_scheduler rgscheduler;
 typedef struct rgutil_time_slice rgtimeslice;
 typedef struct rgutil_job_slot rgjobslot;
 
+
+typedef struct rgu_cnf rgu_cnf;
+struct rgu_cnf
+{
+   uint64_t         debug;
+   uint8_t          foreground;
+   uint8_t          verbose;
+   uint8_t          silent;
+   uint8_t          openlog;
+   uint32_t         pad32;
+   char           * prog_name;
+   char           * cnffile;
+   char           * pidfile;
+   char           * argsfile;
+   char           * sockfile;
+   char           * user_name;
+   char           * group_name;
+   char           * pwnam_buff;
+   char           * grnam_buff;
+   struct passwd    pwd;
+   struct group     grp;
+   size_t           pwnam_len;
+   size_t           grnam_len;
+};
 
 //
 //              Rack Gnome Scheduler/Time Slice Relationship
@@ -126,6 +154,11 @@ struct rgutil_job_slot
 #pragma mark -
 #endif
 
+_RACKGNOME_F int  rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name);
+_RACKGNOME_F void rgutil_config_free(rgu_cnf * cnf);
+_RACKGNOME_F int  rgutil_config_parse(rgu_cnf * cnf);
+_RACKGNOME_F void rgu_perror(rgu_cnf * cnf, const char * fmt, ...);
+_RACKGNOME_F void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args);
 _RACKGNOME_F void rgutil_version(rackgnome_ver const ** verp);
 _RACKGNOME_F void rgutil_version_assert(void);
 _RACKGNOME_F void rgutil_version_print(const char * prog_name);

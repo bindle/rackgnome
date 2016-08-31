@@ -31,8 +31,8 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#ifndef __LIBRGUTIL_VERSION_H
-#define __LIBRGUTIL_VERSION_H 1
+#ifndef __LIBRGUTIL_FILE_H
+#define __LIBRGUTIL_FILE_H 1
 
 
 ///////////////
@@ -46,6 +46,8 @@
 
 #include "librgutil.h"
 
+#include <sys/stat.h>
+
 
 ///////////////////
 //               //
@@ -56,47 +58,48 @@
 #pragma mark - Definitions
 #endif
 
-#ifndef GIT_PACKAGE_MAJOR
-#define GIT_PACKAGE_MAJOR 0
-#endif
-#ifndef GIT_PACKAGE_MINOR
-#define GIT_PACKAGE_MINOR 0
-#endif
-#ifndef GIT_PACKAGE_PATCH
-#define GIT_PACKAGE_PATCH 0
-#endif
-#ifndef GIT_PACKAGE_BUILD
-#define GIT_PACKAGE_BUILD ""
-#endif
-#ifndef GIT_PACKAGE_VERSION_NUMBER
-#define GIT_PACKAGE_VERSION_NUMBER 0.000000
-#endif
-#ifndef GIT_PACKAGE_VERSION
-#define GIT_PACKAGE_VERSION "0.0.0"
-#endif
-#ifndef GIT_PACKAGE_BUILD
-#define GIT_PACKAGE_BUILD "gzzzzzz"
-#endif
-#ifndef GIT_PACKAGE_VERSION_BUILD
-#define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
-#endif
+#define RGU_FS_NOBUFF   0x0001
 
 
-#ifndef LIB_VERSION_CURRENT
-#define LIB_VERSION_CURRENT  0
-#endif
-#ifndef LIB_VERSION_REVISION
-#define LIB_VERSION_REVISION 0xffffffff
-#endif
-#ifndef LIB_VERSION_AGE
-#define LIB_VERSION_AGE      0xffffffff
-#endif
-#ifndef LIB_VERSION_INFO
-#define LIB_VERSION_INFO "4294967295:0:0"
-#endif
-#ifndef LIB_RELEASE_INFO
-#define LIB_RELEASE_INFO "4294967295:0:0"
+//////////////////
+//              //
+//  Data Types  //
+//              //
+//////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Data Types
 #endif
 
+struct rgu_file
+{
+   int                 fd;
+   uint64_t            flags;
+   size_t              line;
+   size_t              buff_size;
+   size_t              buff_pos;
+   struct stat         sb;
+   char              * path;
+   char              * buff;
+   struct rgu_file   * prev;
+   struct rgu_file   * next;
+   struct rgu_file   * top;
+};
 
-#endif /* daemon_h */
+
+//////////////////
+//              //
+//  Prototypes  //
+//              //
+//////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark -
+#endif
+
+int  rgu_fs_close(rgu_cnf * cnf, struct rgu_file ** fsp);
+int  rgu_fs_closestack(rgu_cnf * cnf, struct rgu_file ** fsp);
+int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_file ** fsp);
+void rgu_fs_perror(rgu_cnf * cnf, struct rgu_file * fs, const char * fmt, ...);
+
+
+
+#endif /* file.h */

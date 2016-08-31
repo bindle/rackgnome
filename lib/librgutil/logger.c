@@ -31,8 +31,8 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
-#ifndef __LIBRGUTIL_VERSION_H
-#define __LIBRGUTIL_VERSION_H 1
+#define __LIBRGUTIL_LOGGER_C 1
+#include "logger.h"
 
 
 ///////////////
@@ -44,59 +44,64 @@
 #pragma mark - Headers
 #endif
 
-#include "librgutil.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <syslog.h>
 
 
-///////////////////
-//               //
-//  Definitions  //
-//               //
-///////////////////
+/////////////////
+//             //
+//  Functions  //
+//             //
+/////////////////
 #ifdef __RACKGNOME_PMARK
-#pragma mark - Definitions
+#pragma mark - Functions
 #endif
 
-#ifndef GIT_PACKAGE_MAJOR
-#define GIT_PACKAGE_MAJOR 0
-#endif
-#ifndef GIT_PACKAGE_MINOR
-#define GIT_PACKAGE_MINOR 0
-#endif
-#ifndef GIT_PACKAGE_PATCH
-#define GIT_PACKAGE_PATCH 0
-#endif
-#ifndef GIT_PACKAGE_BUILD
-#define GIT_PACKAGE_BUILD ""
-#endif
-#ifndef GIT_PACKAGE_VERSION_NUMBER
-#define GIT_PACKAGE_VERSION_NUMBER 0.000000
-#endif
-#ifndef GIT_PACKAGE_VERSION
-#define GIT_PACKAGE_VERSION "0.0.0"
-#endif
-#ifndef GIT_PACKAGE_BUILD
-#define GIT_PACKAGE_BUILD "gzzzzzz"
-#endif
-#ifndef GIT_PACKAGE_VERSION_BUILD
-#define GIT_PACKAGE_VERSION_BUILD (GIT_PACKAGE_VERSION "." GIT_PACKAGE_BUILD)
-#endif
+void rgu_perror(rgu_cnf * cnf, const char * fmt, ...)
+{
+   va_list       args;
+
+   assert(fmt != NULL);
+
+   va_start(args, fmt);
+   rgu_vperror(cnf, fmt, args);
+   va_end(args);
+
+   return;
+}
 
 
-#ifndef LIB_VERSION_CURRENT
-#define LIB_VERSION_CURRENT  0
-#endif
-#ifndef LIB_VERSION_REVISION
-#define LIB_VERSION_REVISION 0xffffffff
-#endif
-#ifndef LIB_VERSION_AGE
-#define LIB_VERSION_AGE      0xffffffff
-#endif
-#ifndef LIB_VERSION_INFO
-#define LIB_VERSION_INFO "4294967295:0:0"
-#endif
-#ifndef LIB_RELEASE_INFO
-#define LIB_RELEASE_INFO "4294967295:0:0"
-#endif
+void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args)
+{
+   const char  * prog_name;
+
+   assert(fmt != NULL);
+
+   if (cnf->openlog != 0)
+   {
+      vsyslog(LOG_ERR, fmt, args);
+      return;
+   };
 
 
-#endif /* daemon_h */
+   prog_name = "rackgnome";
+   if ((cnf))
+      if ((cnf->prog_name))
+         prog_name = cnf->prog_name;
+
+
+   fprintf(stderr, "%s[%i]: ", prog_name, getpid());
+   vfprintf(stderr, fmt, args);
+   fprintf(stderr, "\n");
+
+   return;
+}
+
+
+
+/* end of source */

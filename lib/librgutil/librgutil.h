@@ -64,4 +64,23 @@
 #include <assert.h>
 
 
+///////////////////
+//               //
+//  Definitions  //
+//               //
+///////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Definitions
+#endif
+
+#ifndef PACKAGE_TARNAME
+#define PACKAGE_TARNAME "rackgnome"
+#endif
+
+#ifndef PKGCONFDIR
+#define PKGCONFDIR "/etc/rackgnome"
+#endif
+
+
+
 #endif /* Header_h */
