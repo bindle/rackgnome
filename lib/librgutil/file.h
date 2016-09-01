@@ -97,9 +97,12 @@ struct rgu_file
 
 int  rgu_fs_close(rgu_cnf * cnf, struct rgu_file ** fsp);
 int  rgu_fs_closestack(rgu_cnf * cnf, struct rgu_file ** fsp);
-int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_file ** fsp);
+int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
+      struct rgu_file ** fsp);
 void rgu_fs_perror(rgu_cnf * cnf, struct rgu_file * fs, const char * fmt, ...);
-
-
+void rgu_fs_perror_r(rgu_cnf * cnf, char * restrict str, size_t size,
+      struct rgu_file * fs, const char * fmt, ...);
+void rgu_fs_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size,
+      struct rgu_file * fs, const char * fmt, va_list args);
 
 #endif /* file.h */

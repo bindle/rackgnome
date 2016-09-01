@@ -52,6 +52,8 @@
 #include <pwd.h>
 #include <grp.h>
 #include <stdarg.h>
+#include <syslog.h>
+#include <inttypes.h>
 
 
 //////////////////
@@ -154,15 +156,28 @@ struct rgutil_job_slot
 #pragma mark -
 #endif
 
+// config functions
 _RACKGNOME_F int  rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name);
 _RACKGNOME_F void rgutil_config_free(rgu_cnf * cnf);
 _RACKGNOME_F int  rgutil_config_parse(rgu_cnf * cnf);
+
+// logging functions
+_RACKGNOME_F void rgu_debug(rgu_cnf * cnf, uint64_t debug, const char * fmt, ...);
+_RACKGNOME_F void rgu_log(rgu_cnf * cnf, int priority, const char * fmt, ...);
+_RACKGNOME_F void rgu_vlog(rgu_cnf * cnf, int priority, const char * fmt, va_list args);
+_RACKGNOME_F void rgu_vdebug(rgu_cnf * cnf, uint64_t debug, const char * fmt, va_list args);
 _RACKGNOME_F void rgu_perror(rgu_cnf * cnf, const char * fmt, ...);
+_RACKGNOME_F void rgu_perror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, ...);
 _RACKGNOME_F void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args);
+_RACKGNOME_F void rgu_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, va_list args);
+
+// version functions
 _RACKGNOME_F void rgutil_version(rackgnome_ver const ** verp);
 _RACKGNOME_F void rgutil_version_assert(void);
 _RACKGNOME_F void rgutil_version_print(const char * prog_name);
 _RACKGNOME_F void rgutil_version_print_terse(const char * prog_name);
+
+// scheduling functions
 _RACKGNOME_F void rgutil_clock_gettime(struct timespec * ts);
 
 

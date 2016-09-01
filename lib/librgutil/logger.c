@@ -51,6 +51,8 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <stdio.h>
+#include <errno.h>
 
 
 /////////////////
@@ -62,38 +64,99 @@
 #pragma mark - Functions
 #endif
 
-void rgu_perror(rgu_cnf * cnf, const char * fmt, ...)
+
+void rgu_debug(rgu_cnf * cnf, uint64_t debug, const char * fmt, ...)
 {
-   va_list       args;
+   va_list     args;
 
    assert(fmt != NULL);
 
    va_start(args, fmt);
-   rgu_vperror(cnf, fmt, args);
+   rgu_vdebug(cnf, debug, fmt, args);
    va_end(args);
 
    return;
 }
 
 
-void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args)
+void rgu_log(rgu_cnf * cnf, int priority, const char * fmt, ...)
 {
+   va_list       args;
+
+   assert(fmt != NULL);
+
+   va_start(args, fmt);
+   rgu_vlog(cnf, priority, fmt, args);
+   va_end(args);
+
+   return;
+}
+
+
+void rgu_perror(rgu_cnf * cnf, const char * fmt, ...)
+{
+   va_list     args;
+   char        str[1024];
+
+   assert(fmt != NULL);
+
+   va_start(args, fmt);
+   rgu_vperror_r(cnf, str, sizeof(str), fmt, args);
+   va_end(args);
+
+   return;
+}
+
+
+void rgu_perror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, ...)
+{
+   va_list     args;
+
+   assert(fmt != NULL);
+
+   va_start(args, fmt);
+   rgu_vperror_r(cnf, str, size, fmt, args);
+   va_end(args);
+
+   return;
+}
+
+
+void rgu_vdebug(rgu_cnf * cnf, uint64_t debug, const char * fmt, va_list args)
+{
+   uint64_t    cnf_debug;
+
+   assert(fmt != NULL);
+
+   cnf_debug = ((cnf)) ? cnf->debug : 0xffffffffffffffff;
+
+   if ((cnf_debug & debug) == 0)
+      return;
+
+   rgu_vlog(cnf, LOG_DEBUG, fmt, args);
+
+   return;
+}
+
+
+void rgu_vlog(rgu_cnf * cnf, int priority, const char * fmt, va_list args)
+{
+   uint8_t       olog;
    const char  * prog_name;
 
    assert(fmt != NULL);
 
-   if (cnf->openlog != 0)
+   olog = ((cnf)) ? cnf->openlog : 0;
+   if (olog != 0)
    {
-      vsyslog(LOG_ERR, fmt, args);
+      vsyslog(LOG_DEBUG, fmt, args);
       return;
    };
-
 
    prog_name = "rackgnome";
    if ((cnf))
       if ((cnf->prog_name))
          prog_name = cnf->prog_name;
-
 
    fprintf(stderr, "%s[%i]: ", prog_name, getpid());
    vfprintf(stderr, fmt, args);
@@ -103,5 +166,36 @@ void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args)
 }
 
 
+void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args)
+{
+   char  str[1024];
+
+   assert(fmt != NULL);
+
+   rgu_vperror_r(cnf, str, sizeof(str), fmt, args);
+
+   return;
+}
+
+
+void rgu_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, va_list args)
+{
+   size_t     len;
+   char     * errmsg;
+
+   assert(str != NULL);
+   assert(fmt != NULL);
+   assert(size > 4);
+
+   len      = size / 2;
+   errmsg   = &str[len + 1];
+
+   vsnprintf(str, len, fmt, args);
+   strerror_r(errno, errmsg, len);
+
+   rgu_log(cnf, LOG_ERR, "%s: %s", str, errmsg);
+
+   return;
+}
 
 /* end of source */

@@ -135,7 +135,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
    // copies file name
    if ((fs->path = strdup(path)) == NULL)
    {
-      rgu_perror(cnf, "%s: strdup(): %s", path, strerror(errno));
+      rgu_perror(cnf, "%s: strdup()", path);
       rgu_fs_close(cnf, &fs);
       return(-1);
    };
@@ -143,7 +143,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
 
    if ((err = stat(path, &fs->sb)) == -1)
    {
-      rgu_fs_perror(cnf, fs, "stat(): %s", strerror(errno));
+      rgu_fs_perror(cnf, fs, "stat()");
       rgu_fs_close(cnf, &fs);
       return(-1);
    };
@@ -170,7 +170,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
          fs->buff_size = fs->sb.st_size;
       if ((fs->buff = malloc(fs->buff_size)) == NULL)
       {
-         rgu_fs_perror(cnf, fs, "malloc(): %s", strerror(errno));
+         rgu_fs_perror(cnf, fs, "malloc()");
          rgu_fs_close(cnf, &fs);
          return(-1);
       };
@@ -180,7 +180,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
    // opens file for reading
    if ((fs->fd = open(fs->path, O_RDONLY)) == -1)
    {
-      rgu_fs_perror(cnf, fs, "open(O_RDONLY): %s", strerror(errno));
+      rgu_fs_perror(cnf, fs, "open(O_RDONLY)");
       rgu_fs_close(cnf, &fs);
       return(-1);
    };
@@ -198,29 +198,71 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
 void rgu_fs_perror(rgu_cnf * cnf, struct rgu_file * fs, const char * fmt, ...)
 {
    va_list             args;
-   struct rgu_file   * ptr;
-   char                msg[4096];
+   char                str[4096];
 
    assert(cnf != NULL);
    assert(fs  != NULL);
    assert(fmt != NULL);
 
-   for (ptr = fs->top; ptr->next != NULL; ptr = ptr->next)
-   {
-      if (ptr->line != 0)
-         rgu_perror(cnf, "In file included from %s:%zu", ptr->path, ptr->line);
-      else
-         rgu_perror(cnf, "In file included from %s", ptr->path);
-   };
+
 
    va_start(args, fmt);
-   vsnprintf(msg, sizeof(msg), fmt, args);
+   rgu_fs_perror_r(cnf, str, sizeof(str), fs, fmt, args);
    va_end(args);
 
+   return;
+}
+
+
+void rgu_fs_perror_r(rgu_cnf * cnf, char * restrict str, size_t size,
+   struct rgu_file * fs, const char * fmt, ...)
+{
+   va_list             args;
+
+   assert(cnf != NULL);
+   assert(fs  != NULL);
+   assert(fmt != NULL);
+   assert(str != NULL);
+   assert(size > 4);
+
+   va_start(args, fmt);
+   rgu_fs_vperror_r(cnf, str, size, fs, fmt, args);
+   va_end(args);
+
+   return;
+}
+
+
+void rgu_fs_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size,
+   struct rgu_file * fs, const char * fmt, va_list args)
+{
+   struct rgu_file   * ptr;
+   char              * msg;
+   size_t              len;
+
+   assert(cnf != NULL);
+   assert(fs  != NULL);
+   assert(fmt != NULL);
+   assert(str != NULL);
+   assert(size > 4);
+
+   len = size / 4;
+   msg = &str[len+1];
+
+   for (ptr = fs->top; ptr != NULL; ptr = ptr->next)
+   {
+      if (ptr->line != 0)
+         rgu_log(cnf, LOG_ERR, "In file included from %s:%zu", ptr->path, ptr->line);
+      else
+         rgu_log(cnf, LOG_ERR, "In file included from %s", ptr->path);
+   };
+
+   vsnprintf(msg, len, fmt, args);
+
    if (fs->line == 0)
-      rgu_perror(cnf, "%s: %s", fs->path, msg);
+      rgu_perror_r(cnf, str, len, "%s: %s", fs->path, msg);
    else
-      rgu_perror(cnf, "%s: %zu: %s", fs->path, fs->line, msg);
+      rgu_perror_r(cnf, str, len, "%s: %zu: %s", fs->path, fs->line, msg);
 
    return;
 }

@@ -121,7 +121,7 @@ int rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name)
    // allocate memory for configuration
    if ((*cnfp = malloc(sizeof(rgu_cnf))) == NULL)
    {
-      rgu_perror(NULL, "malloc(): %s", strerror(errno));
+      rgu_perror(NULL, "malloc()");
       return(-1);
    };
    bzero(*cnfp, sizeof(rgu_cnf));
@@ -135,7 +135,7 @@ int rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name)
             prog_name = &ptr[1];
       if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
       {
-         rgu_perror(NULL, "strdup(): %s", strerror(errno));
+         rgu_perror(NULL, "strdup()");
          rgutil_config_free(*cnfp);
          return(-1);
       };
