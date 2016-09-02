@@ -84,6 +84,7 @@ struct rgu_file
    struct rgu_file   * prev;
    struct rgu_file   * next;
    struct rgu_file   * top;
+   rgu_cnf           * cnf;
 };
 
 
@@ -96,14 +97,18 @@ struct rgu_file
 #pragma mark -
 #endif
 
-int  rgu_fs_close(rgu_cnf * cnf, struct rgu_file ** fsp);
-int  rgu_fs_closestack(rgu_cnf * cnf, struct rgu_file ** fsp);
+int  rgu_fs_close(struct rgu_file ** fsp);
+int  rgu_fs_closestack(struct rgu_file ** fsp);
+ssize_t rgu_fs_getdelim(char ** linep, size_t * linecapp,
+   int delimiter, struct rgu_file * fs);
+ssize_t rgu_fs_getline(char ** linep, size_t * linecapp,
+   struct rgu_file * fs);
 int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
       struct rgu_file ** fsp);
-void rgu_fs_perror(rgu_cnf * cnf, struct rgu_file * fs, const char * fmt, ...);
-void rgu_fs_perror_r(rgu_cnf * cnf, char * restrict str, size_t size,
-      struct rgu_file * fs, const char * fmt, ...);
-void rgu_fs_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size,
-      struct rgu_file * fs, const char * fmt, va_list args);
+void rgu_fs_perror(struct rgu_file * fs, const char * fmt, ...);
+void rgu_fs_perror_r(struct rgu_file * fs, char * str, size_t size,
+      const char * fmt, ...);
+void rgu_fs_vperror_r(struct rgu_file * fs, char * str, size_t size,
+      const char * fmt, va_list args);
 
 #endif /* file.h */

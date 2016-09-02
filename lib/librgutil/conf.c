@@ -160,12 +160,12 @@ int rgu_config_parse(rgu_cnf * cnf)
    fs = NULL;
    if ((err = rgu_fs_open(cnf, path, 0, &fs)) != 0)
    {
-      rgu_fs_closestack(cnf, &fs);
+      rgu_fs_closestack(&fs);
       return(-1);
    };
 
    rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", path);
-   rgu_fs_closestack(cnf, &fs);
+   rgu_fs_closestack(&fs);
 
    return(0);
 }
