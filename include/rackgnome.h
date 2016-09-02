@@ -125,7 +125,6 @@ struct rackgnome_version
    const uint64_t   pkg_major;
    const uint64_t   pkg_minor;
    const uint64_t   pkg_patch;
-   const double     pkg_version_number;
 
    const char     * pkg_version;
    const char     * pkg_version_build;

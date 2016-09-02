@@ -69,8 +69,6 @@ const rackgnome_ver rgutil_version_data =
    GIT_PACKAGE_MINOR,
    GIT_PACKAGE_PATCH,
 
-   GIT_PACKAGE_VERSION_NUMBER,
-
    GIT_PACKAGE_VERSION,
    GIT_PACKAGE_VERSION_BUILD,
    GIT_PACKAGE_BUILD
@@ -120,7 +118,6 @@ void rgutil_version_assert(void)
    assert(libver->pkg_major            == ver->pkg_major);
    assert(libver->pkg_minor            == ver->pkg_minor);
    assert(libver->pkg_patch            == ver->pkg_patch);
-   assert(libver->pkg_version_number   == ver->pkg_version_number);
 
    assert( (!(strcmp(libver->api_version_info,  ver->api_version_info))) );
    assert( (!(strcmp(libver->api_release_info,  ver->api_release_info))) );
