@@ -70,7 +70,7 @@ doc_DATA				= AUTHORS \
 					  ChangeLog \
 					  INSTALL \
 					  NEWS \
-					  README
+					  README.md
 include_HEADERS				= include/rackgnome.h
 lib_LTLIBRARIES				= lib/librackgnome.la
 man_MANS				=
