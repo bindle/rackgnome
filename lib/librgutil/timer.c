@@ -68,7 +68,7 @@
 #pragma mark - Functions
 #endif
 
-void rgutil_clock_gettime(struct timespec * ts)
+void rgu_clock_gettime(struct timespec * ts)
 {
 #ifdef __MACH__
    clock_serv_t    cclock;

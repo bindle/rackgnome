@@ -87,9 +87,9 @@
 #endif
 
 
-typedef struct rgutil_scheduler rgscheduler;
-typedef struct rgutil_time_slice rgtimeslice;
-typedef struct rgutil_job_slot rgjobslot;
+typedef struct rgu_scheduler  rgu_scheduler;
+typedef struct rgu_time_slice rgu_timeslice;
+typedef struct rgu_job_slot   rgu_job;
 
 
 typedef struct rgu_cnf rgu_cnf;
@@ -142,25 +142,25 @@ struct rgu_cnf
 //
 
 
-struct rgutil_scheduler
+struct rgu_scheduler
 {
    struct timespec     now;      // time when slice was last incremented
    size_t              slices;   // number of time slices in ring
    size_t              slots;    // max number of queued jobs per slice
    long                interval; // length of each time slice in nanoseconds (1e-9 seconds)
-   rgtimeslice       * ring;     // references current time slice in ring
+   rgu_timeslice       * ring;     // references current time slice in ring
 };
 
 
-struct rgutil_time_slice
+struct rgu_time_slice
 {
    size_t           job_len;     // number of job slots currently used
-   rgtimeslice    * next;        // references next time slice
-   rgjobslot      * job_slots;   // array of slots
+   rgu_timeslice    * next;        // references next time slice
+   rgu_job      * job_slots;   // array of slots
 };
 
 
-struct rgutil_job_slot
+struct rgu_job_slot
 {
    uint64_t      job_type;
    uint64_t      job_id;
@@ -178,9 +178,9 @@ struct rgutil_job_slot
 #endif
 
 // config functions
-_RACKGNOME_F int  rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name);
-_RACKGNOME_F void rgutil_config_free(rgu_cnf * cnf);
-_RACKGNOME_F int  rgutil_config_parse(rgu_cnf * cnf);
+_RACKGNOME_F int  rgu_config_init(rgu_cnf ** cnfp, const char * prog_name);
+_RACKGNOME_F void rgu_config_free(rgu_cnf * cnf);
+_RACKGNOME_F int  rgu_config_parse(rgu_cnf * cnf);
 
 // logging functions
 _RACKGNOME_F void rgu_debug(rgu_cnf * cnf, uint64_t debug, const char * fmt, ...);
@@ -193,13 +193,13 @@ _RACKGNOME_F void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args);
 _RACKGNOME_F void rgu_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, va_list args);
 
 // version functions
-_RACKGNOME_F void rgutil_version(rackgnome_ver const ** verp);
-_RACKGNOME_F void rgutil_version_assert(void);
-_RACKGNOME_F void rgutil_version_print(const char * prog_name);
-_RACKGNOME_F void rgutil_version_print_terse(const char * prog_name);
+_RACKGNOME_F void rgu_version(rackgnome_ver const ** verp);
+_RACKGNOME_F void rgu_version_assert(void);
+_RACKGNOME_F void rgu_version_print(const char * prog_name);
+_RACKGNOME_F void rgu_version_print_terse(const char * prog_name);
 
 // scheduling functions
-_RACKGNOME_F void rgutil_clock_gettime(struct timespec * ts);
+_RACKGNOME_F void rgu_clock_gettime(struct timespec * ts);
 
 
 

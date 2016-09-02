@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
       { NULL,            0,           0, 0  }
    };
 
-   rgutil_version_assert();
+   rgu_version_assert();
 
    while((c = getopt_long(argc, argv, short_opt, long_opt, &opt_index)) != -1)
    {
@@ -115,11 +115,11 @@ int main(int argc, char * argv[])
          return(0);
 
          case 'T':
-         rgutil_version_print_terse(PROGRAM_NAME);;
+         rgu_version_print_terse(PROGRAM_NAME);;
          return(0);
 
          case 'V':
-         rgutil_version_print(PROGRAM_NAME);
+         rgu_version_print(PROGRAM_NAME);
          return(0);
 
          case '?':
@@ -133,7 +133,7 @@ int main(int argc, char * argv[])
       };
    };
 
-   rgutil_version_print(PROGRAM_NAME);
+   rgu_version_print(PROGRAM_NAME);
 
    return(0);
 }

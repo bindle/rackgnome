@@ -84,7 +84,7 @@ const static rackgnome_ver rgutil_version_data =
 #pragma mark - Functions
 #endif
 
-void rgutil_version(const rackgnome_ver ** verp)
+void rgu_version(const rackgnome_ver ** verp)
 {
    assert(verp != NULL);
    *verp = &rgutil_version_data;
@@ -92,13 +92,13 @@ void rgutil_version(const rackgnome_ver ** verp)
 }
 
 
-void rgutil_version_assert(void)
+void rgu_version_assert(void)
 {
    const rackgnome_ver * libver;
    const rackgnome_ver * ver;
 
    rackgnome_version(&libver);
-   rgutil_version(&ver);
+   rgu_version(&ver);
 
    assert(libver->api_version_info  != NULL);
    assert(libver->api_release_info  != NULL);
@@ -129,7 +129,7 @@ void rgutil_version_assert(void)
 }
 
 
-void rgutil_version_print(const char * prog_name)
+void rgu_version_print(const char * prog_name)
 {
    const rackgnome_ver * libver;
    const rackgnome_ver * ver;
@@ -137,7 +137,7 @@ void rgutil_version_print(const char * prog_name)
    assert(prog_name != NULL);
 
    rackgnome_version(&libver);
-   rgutil_version(&ver);
+   rgu_version(&ver);
 
    printf(
       (
@@ -174,7 +174,7 @@ void rgutil_version_print(const char * prog_name)
 }
 
 
-void rgutil_version_print_terse(const char * prog_name)
+void rgu_version_print_terse(const char * prog_name)
 {
    assert(prog_name != NULL);
 

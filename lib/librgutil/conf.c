@@ -75,7 +75,7 @@ void rgutil_config_free_str(char ** pptr);
 #pragma mark - Functions
 #endif
 
-void rgutil_config_free(rgu_cnf * cnf)
+void rgu_config_free(rgu_cnf * cnf)
 {
    assert(cnf != NULL);
 
@@ -109,13 +109,13 @@ void rgutil_config_free_str(char ** pptr)
 }
 
 
-int rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name)
+int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
 {
    const char * ptr;
 
    assert(cnfp  != NULL);
    assert(*cnfp == NULL);
-   rgutil_version_assert();
+   rgu_version_assert();
 
 
    // allocate memory for configuration
@@ -136,7 +136,7 @@ int rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name)
       if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
       {
          rgu_perror(NULL, "strdup()");
-         rgutil_config_free(*cnfp);
+         rgu_config_free(*cnfp);
          return(-1);
       };
    };
@@ -145,7 +145,7 @@ int rgutil_config_init(rgu_cnf ** cnfp, const char * prog_name)
 }
 
 
-int rgutil_config_parse(rgu_cnf * cnf)
+int rgu_config_parse(rgu_cnf * cnf)
 {
    int                 err;
    struct rgu_file   * fs;
