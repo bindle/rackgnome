@@ -114,8 +114,12 @@ DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings
 
 
 # macros for lib/librackgnome.la
-lib_librackgnome_la_DEPENDENCIES	= Makefile lib/librackgnome/librackgnome.sym config.h
-lib_librackgnome_la_LDFLAGS		= -rpath'$(libdir)'\
+lib_librackgnome_la_DEPENDENCIES	= \
+					  Makefile \
+					  config.h \
+					  lib/librackgnome/librackgnome.sym
+lib_librackgnome_la_LDFLAGS		= \
+					  -rpath'$(libdir)'\
 					  -version-info $(LIB_VERSION_INFO) \
 					  $(AM_LDFLAGS) \
 					  -export-symbols $(srcdir)/lib/librackgnome/librackgnome.sym
@@ -127,11 +131,10 @@ lib_librackgnome_la_SOURCES		= \
 
 
 # macros for lib/librgutil.a
-lib_librgutil_a_DEPENDENCIES		= Makefile lib/librgutil/librgutil.sym config.h
-lib_librgutil_a_LDFLAGS			= -rpath'$(libdir)'\
-					  -version-info $(LIB_VERSION_INFO) \
-					  $(AM_LDFLAGS) \
-					  -export-symbols $(srcdir)/lib/librgutil/librgutil.sym
+lib_librgutil_a_DEPENDENCIES		= \
+					  Makefile \
+					  config.h \
+					  lib/librgutil/librgutil.sym
 lib_librgutil_a_SOURCES			= \
 					  include/rgutil.h \
 					  lib/librgutil/librgutil.h \
