@@ -94,12 +94,6 @@
 #endif
 
 
-typedef struct rgu_scheduler  rgu_scheduler;
-typedef struct rgu_time_slice rgu_timeslice;
-typedef struct rgu_job_slot   rgu_job;
-
-
-typedef struct rgu_cnf rgu_cnf;
 /// @ingroup rgu_conf
 /// @brief Provides configuration information for internal utilities and
 /// applications.
@@ -125,6 +119,8 @@ struct rgu_cnf
    size_t           pwnam_len;
    size_t           grnam_len;
 };
+typedef struct rgu_cnf rgu_cnf;
+
 
 //
 //              Rack Gnome Scheduler/Time Slice Relationship
@@ -151,30 +147,29 @@ struct rgu_cnf
 //                +-----+-----+-----+
 //
 
-
-struct rgu_scheduler
-{
-   struct timespec     now;      // time when slice was last incremented
-   size_t              slices;   // number of time slices in ring
-   size_t              slots;    // max number of queued jobs per slice
-   long                interval; // length of each time slice in nanoseconds (1e-9 seconds)
-   rgu_timeslice       * ring;     // references current time slice in ring
-};
-
-
-struct rgu_time_slice
-{
-   size_t           job_len;     // number of job slots currently used
-   rgu_timeslice    * next;        // references next time slice
-   rgu_job      * job_slots;   // array of slots
-};
-
-
-struct rgu_job_slot
+struct rgu_job
 {
    uint64_t      job_type;
    uint64_t      job_id;
    void        * job_data;
+};
+
+
+struct rgu_scheduler
+{
+   struct timespec        now;      ///< time when slice was last incremented
+   size_t                 slices;   ///< number of time slices in ring
+   size_t                 slots;    ///< max number of queued jobs per slice
+   long                   interval; ///< length of each time slice in nanoseconds (1e-9 seconds)
+   struct rgu_timeslice * ring;     ///< references current time slice in ring
+};
+
+
+struct rgu_timeslice
+{
+   size_t                 job_len;     ///< number of job slots currently used
+   struct rgu_timeslice * next;        ///< references next time slice
+   struct rgu_job       * job_slots;   ///< array of slots
 };
 
 
