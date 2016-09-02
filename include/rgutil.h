@@ -31,6 +31,10 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
+/**
+ *   @file rgutil.h
+ *   Rack Gnome's internal API
+ */
 #ifndef __RGUTIL_H
 #define __RGUTIL_H 1
 #undef __RACKGNOME_PMARK
@@ -65,16 +69,19 @@
 #pragma mark - Definitions
 #endif
 
-#define RGU_DANY        -1
-#define RGU_DNONE       0x0000000000000000
-#define RGU_DCONF       0x0000000000000001
-#define RGU_DPROC       0x0000000000000002
-#define RGU_DTHRD       0x0000000000000004
-#define RGU_DCONN       0x0000000000000008
-#define RGU_DPRBE       0x0000000000000010
-#define RGU_DCACH       0x0000000000000020
-#define RGU_DDB         0x0000000000000040
-#define RGU_DGOLD       0x0000000000000080
+/// @ingroup rgu_log
+/// @{
+#define RGU_DANY        -1                   ///< Enable all debug messages
+#define RGU_DNONE       0x0000000000000000   ///< Do not enable any debug messages (default)
+#define RGU_DCONF       0x0000000000000001   ///< enable configuration parsing messages
+#define RGU_DPROC       0x0000000000000002   ///< enable process management messages
+#define RGU_DTHRD       0x0000000000000004   ///< enable thread management messages
+#define RGU_DCONN       0x0000000000000008   ///< enable connection/socket management messages
+#define RGU_DPRBE       0x0000000000000010   ///< enable probe debug messages
+#define RGU_DCACH       0x0000000000000020   ///< enable cache debug messages
+#define RGU_DDB         0x0000000000000040   ///< enable database debug messages
+#define RGU_DGOLD       0x0000000000000080   ///< enable Goldogrin debug messages
+/// @}
 
 
 //////////////////
@@ -93,25 +100,28 @@ typedef struct rgu_job_slot   rgu_job;
 
 
 typedef struct rgu_cnf rgu_cnf;
+/// @ingroup rgu_conf
+/// @brief Provides configuration information for internal utilities and
+/// applications.
 struct rgu_cnf
 {
-   uint64_t         debug;
-   uint8_t          foreground;
-   uint8_t          verbose;
-   uint8_t          silent;
-   uint8_t          openlog;
+   uint64_t         debug;       ///< debug level of proram
+   uint8_t          foreground;  ///< if a daemon, determines whether to run in forground or background
+   uint8_t          verbose;     ///< controls verbosity of output if running in foreground
+   uint8_t          silent;      ///< disables messages if running in foreground
+   uint8_t          openlog;     ///< indicates wether logs have been initialized
    uint32_t         pad32;
-   char           * prog_name;
-   char           * cnffile;
-   char           * pidfile;
-   char           * argsfile;
-   char           * sockfile;
-   char           * user_name;
-   char           * group_name;
+   char           * prog_name;   ///< name of running program
+   char           * cnffile;     ///< path to configuration file, if not in default location
+   char           * pidfile;     ///< path to use when creating PID files
+   char           * argsfile;    ///< path to use when greating argument files (i.e. .args)
+   char           * sockfile;    ///< path to use when open UNIX domain socket
+   char           * user_name;   ///< username to use when invoking setuid().
+   char           * group_name;  ///< group name to use when invoking setgid().
    char           * pwnam_buff;
    char           * grnam_buff;
-   struct passwd    pwd;
-   struct group     grp;
+   struct passwd    pwd;         ///< passwd data for `user_name`
+   struct group     grp;         ///< group data for `group_name`
    size_t           pwnam_len;
    size_t           grnam_len;
 };
@@ -177,12 +187,48 @@ struct rgu_job_slot
 #pragma mark -
 #endif
 
-// config functions
-_RACKGNOME_F int  rgu_config_init(rgu_cnf ** cnfp, const char * prog_name);
-_RACKGNOME_F void rgu_config_free(rgu_cnf * cnf);
-_RACKGNOME_F int  rgu_config_parse(rgu_cnf * cnf);
+/**
+ *  @defgroup rgu_conf Internal Configuration Functions
+ *  @brief Functions which parse configuration files and manage configuration
+ *         resources.
+ *  @{
+ */
+#ifdef __RACKGNOME_PMARK
+#pragma mark Configuration Prototypes
+#endif
 
-// logging functions
+/// Allocates and initializes configuration struct.
+/// @param[out] cnfp       Reference to pointer used to track configuration.
+/// @param[in]  prog_name  Name of program to use in logs and messages.
+/// @return If successful, `rgu_config_init()` returns 0. It returns -1 if an
+///         error was encountered and will record details to the log.
+/// @see rgu_config_free, rgu_config_parse
+_RACKGNOME_F int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name);
+
+
+/// Frees memory and resources used by the configuration struct referenced by `cnf`.
+/// @param[in] cnf         Pointer to the librgutil state data.
+/// @see rgu_config_init
+_RACKGNOME_F void rgu_config_free(rgu_cnf * cnf);
+
+
+/// Parses configuration files and applies default values to undefined options.
+/// @param[in] cnf         Pointer to the librgutil state data.
+/// @return If successful, `rgu_config_init()` returns 0. It returns -1 if an
+///         error was encountered and will record details to the log.
+/// @see rgu_config_init, rgu_config_free
+_RACKGNOME_F int rgu_config_parse(rgu_cnf * cnf);
+
+
+/**
+ *  @}
+ *  @defgroup rgu_log Internal Logging Functions
+ *  @brief Functions which process log messages.
+ */
+#ifdef __RACKGNOME_PMARK
+#pragma mark Logging Prototypes
+#endif
+
 _RACKGNOME_F void rgu_debug(rgu_cnf * cnf, uint64_t debug, const char * fmt, ...);
 _RACKGNOME_F void rgu_log(rgu_cnf * cnf, int priority, const char * fmt, ...);
 _RACKGNOME_F void rgu_vlog(rgu_cnf * cnf, int priority, const char * fmt, va_list args);
@@ -192,11 +238,28 @@ _RACKGNOME_F void rgu_perror_r(rgu_cnf * cnf, char * restrict str, size_t size, 
 _RACKGNOME_F void rgu_vperror(rgu_cnf * cnf, const char * fmt, va_list args);
 _RACKGNOME_F void rgu_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size, const char * fmt, va_list args);
 
-// version functions
+
+/**
+ *  @defgroup rgu_version Internal Version Functions
+ *  @brief Functions which report API and program versions.
+ */
+#ifdef __RACKGNOME_PMARK
+#pragma mark Version Prototypes
+#endif
+
 _RACKGNOME_F void rgu_version(rackgnome_ver const ** verp);
 _RACKGNOME_F void rgu_version_assert(void);
 _RACKGNOME_F void rgu_version_print(const char * prog_name);
 _RACKGNOME_F void rgu_version_print_terse(const char * prog_name);
+
+
+/**
+ *  @defgroup rgu_schedule Internal Scheduling Functions
+ *  @brief Functions which schedule jobs and manage job queues
+ */
+#ifdef __RACKGNOME_PMARK
+#pragma mark Scheduling Prototypes
+#endif
 
 // scheduling functions
 _RACKGNOME_F void rgu_clock_gettime(struct timespec * ts);

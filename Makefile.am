@@ -43,6 +43,7 @@ DIST_SUBDIRS				=
 
 # directory locations
 pkgconfdir				= $(sysconfdir)/$(package_tarname)
+doxygendir				= $(docdir)/doxygen
 
 
 # Global flags
@@ -71,10 +72,12 @@ doc_DATA				= AUTHORS \
 					  INSTALL \
 					  NEWS \
 					  README.md
+doxygen_DATA				=
 include_HEADERS				= include/rackgnome.h
 lib_LTLIBRARIES				= lib/librackgnome.la
 man_MANS				=
 info_TEXINFOS				=
+noinst_DATA				=
 noinst_LTLIBRARIES			=
 noinst_LIBRARIES			= lib/librgutil.a
 noinst_HEADERS				= include/rgutil.h
@@ -95,6 +98,8 @@ TESTS					=
 XFAIL_TESTS				=
 EXTRA_MANS				=
 EXTRA_DIST				= \
+					  README.md \
+					  doc/Doxyfile.in \
 					  doc/conf/rackgnome.conf-example.in \
 					  lib/librackgnome/librackgnome.sym \
 					  lib/librgutil/librgutil.sym
@@ -102,6 +107,9 @@ CLEANFILES				= \
 					  $(builddir)/a.out   $(srcdir)/a.out \
 					  $(builddir)/*/a.out $(srcdir)/*/a.out \
 					  config.h.in~ $(srcdir)/config.h.in~ \
+					  doc/Doxyfile \
+					  doc/Doxyfile.make \
+					  doc/doxygen \
 					  $(man_MANS) \
 					  $(pkgconf_DATA) \
 					  $(pkgdata_DATA) \
@@ -110,7 +118,14 @@ CLEANFILES				= \
 					  @PACKAGE_TARNAME@-*.tar.* \
 					  @PACKAGE_TARNAME@-*.txz \
 					  @PACKAGE_TARNAME@-*.zip
-DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings
+DISTCHECK_CONFIGURE_FLAGS		= --enable-strictwarnings \
+					  --enable-doxygen-docs
+
+
+# macros for doc/doxygen
+if ENABLE_DOXYGEN
+noinst_DATA				+= doc/doxygen/html/index.html
+endif
 
 
 # macros for lib/librackgnome.la
@@ -179,10 +194,22 @@ include $(srcdir)/@bindletools_srcdir@/build-aux/makefile-version.am
 
 
 # custom targets
-.PHONY:
+.PHONY: dox doxygen
 
 doc/conf/rackgnome.conf-example: Makefile doc/conf/rackgnome.conf-example.in
 	$(do_subst_dt)
+
+dox: doc/doxygen/html/index.html
+
+doxygen: doc/doxygen/html/index.html
+
+doc/doxygen/html/index.html: doc/Doxyfile $(noinst_HEADERS) $(include_HEADERS)
+	rm -fR doc/doxygen
+	mkdir -p doc/doxygen
+	cd $(top_srcdir) && $(DOXYGEN) $(abs_top_builddir)/doc/Doxyfile
+
+doc/Doxyfile: Makefile doc/Doxyfile.in
+	@$(do_subst_dt)
 
 
 # local targets
@@ -195,6 +222,8 @@ install-data-hook:
 uninstall-local:
 
 clean-local:
+	rm -fR $(builddir)/doc/doxygen
+	rm -fR $(srcdir)/doc/doxygen
 
 distclean-local:
 	rm -fR $(srcdir)/autom4te.cache

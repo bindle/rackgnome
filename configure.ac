@@ -181,6 +181,8 @@ AC_BINDLE_GIT_PACKAGE_VERSION([contrib/bindletools/build-aux/git-package-version
 
 # custom configure options
 AC_BINDLE_ENABLE_WARNINGS
+AC_BINDLE_WITH_DOXYGEN
+AC_RACKGNOME_COMPONENTS
 
 
 # enables getopt_long if header and functions were found
@@ -197,6 +199,11 @@ AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Rack Gnome $GIT_PACKAGE_VERSION ($GIT_PACKAGE_BUILD)])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Features:])
+AC_MSG_NOTICE([      Doxygen Docs:              ${ENABLE_DOXYGEN}])
+AC_MSG_NOTICE([      librackgnome.la:           ${ENABLE_LIBRACKGNOME}])
+AC_MSG_NOTICE([      librgutil.a:               ${ENABLE_LIBRGUTIL}])
+AC_MSG_NOTICE([ ])
+AC_MSG_NOTICE([   Options:])
 AC_MSG_NOTICE([ ])
 AC_MSG_NOTICE([   Please send suggestions to:   $PACKAGE_BUGREPORT])
 AC_MSG_NOTICE([ ])

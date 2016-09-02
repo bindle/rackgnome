@@ -34,4 +34,46 @@
 #   acinclude.m4 - custom m4 macros used by configure.ac
 #
 
+# AC_RACKGNOME_COMPONENTS
+# ______________________________________________________________________________
+AC_DEFUN([AC_RACKGNOME_COMPONENTS],[dnl
+
+   enableval=""
+   AC_ARG_ENABLE(
+      doxygen-docs,
+      [AS_HELP_STRING([--enable-doxygen-docs], [enable Doxygen documentation])],
+      [ EDOXYGEN=$enableval ],
+      [ EDOXYGEN=$enableval ]
+   )
+   enableval=""
+   AC_ARG_ENABLE(
+      librackgnome,
+      [AS_HELP_STRING([--enable-librackgnome], [enable building Rack Gnome client library])],
+      [ ELIBRACKGNOME=$enableval ],
+      [ ELIBRACKGNOME=$enableval ]
+   )
+
+
+   ENABLE_DOXYGEN=no
+   ENABLE_LIBRACKGNOME=yes
+   ENABLE_LIBRGUTIL=no
+
+
+   if test "x${EDOXYGEN}" = "xyes";then
+      ENABLE_DOXYGEN=yes
+   fi
+   if test "x${ELIBRACKGNOME}" = "xno";then
+      ENABLE_LIBRACKGNOME=no
+   fi
+   if test "x${ENABLE_LIBRACKGNOME}" = "xyes";then
+      ENABLE_LIBRGUTIL=yes
+   fi
+
+
+   AM_CONDITIONAL([ENABLE_DOXYGEN],       [test "${ENABLE_DOXYGEN}"        == "yes"])
+   AM_CONDITIONAL([ELIBRACKGNOME],        [test "${ENABLE_LIBRACKGNOME}"   == "yes"])
+   AM_CONDITIONAL([ENABLE_LIBRGUTIL],     [test "${ENABLE_LIBRGUTIL}"      == "yes"])
+])dnl
+
+
 # end of m4 file
