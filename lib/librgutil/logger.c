@@ -149,7 +149,7 @@ void rgu_vlog(rgu_cnf * cnf, int priority, const char * fmt, va_list args)
    olog = ((cnf)) ? cnf->openlog : 0;
    if (olog != 0)
    {
-      vsyslog(LOG_DEBUG, fmt, args);
+      vsyslog(priority, fmt, args);
       return;
    };
 
