@@ -165,9 +165,9 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
    // creates initial read buffer
    if ((fs->flags & RGU_FS_NOBUFF) == 0)
    {
-      fs->buff_size = fs->sb.st_blksize * 4;
-      if (fs->sb.st_size < fs->buff_size)
-         fs->buff_size = fs->sb.st_size;
+      fs->buff_size = (size_t)fs->sb.st_blksize * 4;
+      if (fs->sb.st_size < (fs->sb.st_blksize * 4))
+         fs->buff_size = (size_t)fs->sb.st_size;
       if ((fs->buff = malloc(fs->buff_size)) == NULL)
       {
          rgu_fs_perror(cnf, fs, "malloc()");

@@ -53,7 +53,7 @@
 #pragma mark - Variables
 #endif
 
-const rackgnome_ver rackgnome_version_data =
+const static rackgnome_ver rackgnome_version_data =
 {
    LIB_VERSION_CURRENT,
    LIB_VERSION_REVISION,

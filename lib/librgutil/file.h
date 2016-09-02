@@ -73,6 +73,7 @@
 struct rgu_file
 {
    int                 fd;
+   int                 padint;
    uint64_t            flags;
    size_t              line;
    size_t              buff_size;
