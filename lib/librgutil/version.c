@@ -63,15 +63,13 @@ const static rackgnome_ver rgutil_version_data =
    LIB_VERSION_AGE,
 
    LIB_VERSION_INFO,
-   LIB_RELEASE_INFO,
 
    GIT_PACKAGE_MAJOR,
    GIT_PACKAGE_MINOR,
    GIT_PACKAGE_PATCH,
 
-   GIT_PACKAGE_VERSION,
-   GIT_PACKAGE_VERSION_BUILD,
-   GIT_PACKAGE_BUILD
+   GIT_PACKAGE_BUILD,
+   GIT_PACKAGE_VERSION_BUILD
 };
 
 
@@ -100,30 +98,24 @@ void rgu_version_assert(void)
    rackgnome_version(&libver);
    rgu_version(&ver);
 
-   assert(libver->api_version_info  != NULL);
-   assert(libver->api_release_info  != NULL);
-   assert(libver->pkg_version_build != NULL);
-   assert(libver->pkg_version       != NULL);
-   assert(libver->pkg_build         != NULL);
+   assert(libver->api_string     != NULL);
+   assert(libver->pkg_string     != NULL);
+   assert(libver->pkg_build      != NULL);
 
-   assert(ver->api_version_info     != NULL);
-   assert(ver->api_release_info     != NULL);
-   assert(ver->pkg_version_build    != NULL);
-   assert(ver->pkg_version          != NULL);
-   assert(ver->pkg_build            != NULL);
+   assert(ver->api_string        != NULL);
+   assert(ver->pkg_string        != NULL);
+   assert(ver->pkg_build         != NULL);
 
-   assert(libver->api_current          == ver->api_current);
-   assert(libver->api_revision         == ver->api_revision);
-   assert(libver->api_age              == ver->api_age);
-   assert(libver->pkg_major            == ver->pkg_major);
-   assert(libver->pkg_minor            == ver->pkg_minor);
-   assert(libver->pkg_patch            == ver->pkg_patch);
+   assert(libver->api_current    == ver->api_current);
+   assert(libver->api_revision   == ver->api_revision);
+   assert(libver->api_age        == ver->api_age);
+   assert(libver->pkg_major      == ver->pkg_major);
+   assert(libver->pkg_minor      == ver->pkg_minor);
+   assert(libver->pkg_patch      == ver->pkg_patch);
 
-   assert( (!(strcmp(libver->api_version_info,  ver->api_version_info))) );
-   assert( (!(strcmp(libver->api_release_info,  ver->api_release_info))) );
-   assert( (!(strcmp(libver->pkg_version,       ver->pkg_version))) );
-   assert( (!(strcmp(libver->pkg_version_build, ver->pkg_version_build))) );
-   assert( (!(strcmp(libver->pkg_build,         ver->pkg_build))) );
+   assert( (!(strcmp(libver->api_string,  ver->api_string))) );
+   assert( (!(strcmp(libver->pkg_string,  ver->pkg_string))) );
+   assert( (!(strcmp(libver->pkg_build,   ver->pkg_build))) );
 
    return;
 }
@@ -165,9 +157,9 @@ void rgu_version_print(const char * prog_name)
          "  |.|           |.|\n"
          "__|_|___________|_|__\n"
       ),
-      ver->pkg_version_build,
-      libver->api_version_info,
-      libver->api_version_info
+      ver->pkg_string,
+      libver->api_string,
+      libver->api_string
    );
 
    return;
@@ -183,8 +175,8 @@ void rgu_version_print_terse(const char * prog_name)
    rackgnome_version(&libver);
 
    printf("%s (%s) %s\n", prog_name, PACKAGE_TARNAME, GIT_PACKAGE_VERSION_BUILD);
-   printf("librackgnome (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_version_build, libver->api_version_info);
-   printf("goldogrin (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_version_build, libver->api_version_info);
+   printf("librackgnome (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_string, libver->api_string);
+   printf("goldogrin (%s) %s api/%s\n", PACKAGE_TARNAME, libver->pkg_string, libver->api_string);
    printf("\n");
 
    return;

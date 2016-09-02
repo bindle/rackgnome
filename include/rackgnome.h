@@ -31,6 +31,10 @@
  *
  *  @SYZDEK_BSD_LICENSE_END@
  */
+/**
+ *   @file rackgnome.h
+ *   Rack Gnome's public API
+ */
 #ifndef __RACKGNOME_H
 #define __RACKGNOME_H 1
 #undef __RACKGNOME_PMARK
@@ -112,24 +116,57 @@
 #endif
 
 
-typedef struct rackgnome_version rackgnome_ver;
+/// @ingroup rg_version
+/// @struct rackgnome_version
+/// @brief Struct for storing API information and package information for
+/// packages, libaries, and protocols.
+///
+/// API information is in the format of _current:revision:age_. Where:
+///
+///    * _current_   is the current version of the API
+///                  (see [api_current](@ref rackgnome_version::api_current)).
+///
+///    * _revision_  is the revision of the source code implmenting the API
+///                  (see [api_revision](@ref rackgnome_version::api_revision)).
+///
+///    * _age_       is the number of previous API versions which are
+///                  compatible with the current API version
+///                  (see [api_age](@ref rackgnome_version::api_age)).
+///
+/// Package information is in the format of _x.y.z.gbbbbbb_
+/// (see [pkg_version](@ref rackgnome_version::pkg_version)). Where:
+///
+///    * _x_        is the major version number of the current package release.
+///                 (see [pkg_major](@ref rackgnome_version::pkg_major)).
+///
+///    * _y_        is the minor version number of the current package release.
+///                 (see [pkg_minor](@ref rackgnome_version::pkg_minor)).
+///
+///    * _z_        is the patch level of the current package release.
+///                 (see [pkg_patch](@ref rackgnome_version::pkg_patch)).
+///
+///    * _gbbbbbb_  is the version control system's commit identifier of the
+///                 current package release.
+///                 (see [pkg_build](@ref rackgnome_version::pkg_build)).
+///
+/// @see rackgnome_version
+///
 struct rackgnome_version
 {
-   const uint64_t   api_current;
-   const uint64_t   api_revision;
-   const uint64_t   api_age;
+   const uint64_t   api_current;    ///< The current version of the API.
+   const uint64_t   api_revision;   ///< Revision of source code implementing the current version of the API
+   const uint64_t   api_age;        ///< The number of previous API versions compatible with the current version of the API.
 
-   const char     * api_version_info;
-   const char     * api_release_info;
+   const char     * api_string;     ///< String representation of the API information.
 
-   const uint64_t   pkg_major;
-   const uint64_t   pkg_minor;
-   const uint64_t   pkg_patch;
+   const uint64_t   pkg_major;      ///< The major version number of the current package release.
+   const uint64_t   pkg_minor;      ///< The minor version number of the current package release.
+   const uint64_t   pkg_patch;      ///< The patch level of the current package release.
+   const char     * pkg_build;      ///< The version control system's commit identifier of the current package release.
 
-   const char     * pkg_version;
-   const char     * pkg_version_build;
-   const char     * pkg_build;
+   const char     * pkg_string;     ///< String representation of the package version.
 };
+typedef struct rackgnome_version rackgnome_ver;
 
 
 /////////////////
@@ -148,10 +185,25 @@ struct rackgnome_version
 //              //
 //////////////////
 #ifdef __RACKGNOME_PMARK
-#pragma mark - Prototypes
+#pragma mark -
 #endif
 
+/**
+ *  @}
+ *  @defgroup rg_version Public Version Functions
+ *  @brief Functions which report API and program versions.
+ *  @{
+ */
+#ifdef __RACKGNOME_PMARK
+#pragma mark Version Prototypes
+#endif
+
+
+/// Returns the API/version information for the Rack Gnome library.
+/// @param[out] verp       Reference to pointer used to track configuration.
+/// @see struct rackgnome_version
 _RACKGNOME_F void rackgnome_version(rackgnome_ver const ** verp);
 
 
+/** @} */
 #endif /* end of header */

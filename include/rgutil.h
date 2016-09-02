@@ -219,6 +219,7 @@ _RACKGNOME_F int rgu_config_parse(rgu_cnf * cnf);
  *  @}
  *  @defgroup rgu_log Internal Logging Functions
  *  @brief Functions which process log messages.
+ *  @{
  */
 #ifdef __RACKGNOME_PMARK
 #pragma mark Logging Prototypes
@@ -235,8 +236,10 @@ _RACKGNOME_F void rgu_vperror_r(rgu_cnf * cnf, char * restrict str, size_t size,
 
 
 /**
+ *  @}
  *  @defgroup rgu_version Internal Version Functions
  *  @brief Functions which report API and program versions.
+ *  @{
  */
 #ifdef __RACKGNOME_PMARK
 #pragma mark Version Prototypes
@@ -249,8 +252,10 @@ _RACKGNOME_F void rgu_version_print_terse(const char * prog_name);
 
 
 /**
+ *  @}
  *  @defgroup rgu_schedule Internal Scheduling Functions
  *  @brief Functions which schedule jobs and manage job queues
+ *  @{
  */
 #ifdef __RACKGNOME_PMARK
 #pragma mark Scheduling Prototypes
@@ -260,5 +265,5 @@ _RACKGNOME_F void rgu_version_print_terse(const char * prog_name);
 _RACKGNOME_F void rgu_clock_gettime(struct timespec * ts);
 
 
-
+/** @} */
 #endif /* rgutil_h */
