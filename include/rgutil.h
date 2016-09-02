@@ -56,6 +56,27 @@
 #include <inttypes.h>
 
 
+///////////////////
+//               //
+//  Definitions  //
+//               //
+///////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Definitions
+#endif
+
+#define RGU_DANY        -1
+#define RGU_DNONE       0x0000000000000000
+#define RGU_DCONF       0x0000000000000001
+#define RGU_DPROC       0x0000000000000002
+#define RGU_DTHRD       0x0000000000000004
+#define RGU_DCONN       0x0000000000000008
+#define RGU_DPRBE       0x0000000000000010
+#define RGU_DCACH       0x0000000000000020
+#define RGU_DDB         0x0000000000000040
+#define RGU_DGOLD       0x0000000000000080
+
+
 //////////////////
 //              //
 //  Data Types  //

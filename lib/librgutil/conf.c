@@ -156,6 +156,7 @@ int rgutil_config_parse(rgu_cnf * cnf)
    if ((path = cnf->cnffile) == NULL)
       path = PKGCONFDIR "/" PACKAGE_TARNAME ".conf";
 
+   rgu_debug(cnf, RGU_DCONF, "opening file \"%s\"", path);
    fs = NULL;
    if ((err = rgu_fs_open(cnf, path, 0, &fs)) != 0)
    {
@@ -163,6 +164,7 @@ int rgutil_config_parse(rgu_cnf * cnf)
       return(-1);
    };
 
+   rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", path);
    rgu_fs_closestack(cnf, &fs);
 
    return(0);
