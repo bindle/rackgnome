@@ -135,7 +135,11 @@ AC_TYPE_UINT64_T
 # check for required functions
 AC_CHECK_FUNCS([bzero],          [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([clock_gettime])
+AC_CHECK_FUNCS([getaddrinfo],    [], [AC_MSG_ERROR([missing required functions])])
+AC_CHECK_FUNCS([gethostname],    [], [AC_MSG_ERROR([missing required functions])])
+AC_CHECK_FUNCS([getnameinfo],    [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([gettimeofday],   [], [AC_MSG_ERROR([missing required functions])])
+AC_CHECK_FUNCS([memmove],        [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([memset],         [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([regcomp],        [], [AC_MSG_ERROR([missing required functions])])
 AC_CHECK_FUNCS([socket],         [], [AC_MSG_ERROR([missing required functions])])
@@ -162,9 +166,12 @@ AC_CHECK_HEADERS([mach/mach.h])
 AC_CHECK_HEADERS([netdb.h],      [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([netinet/in.h], [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([stddef.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([string.h],     [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([sys/socket.h], [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([sys/time.h],   [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([sys/types.h],  [], [AC_MSG_ERROR([missing required headers])])
 AC_CHECK_HEADERS([syslog.h],     [], [AC_MSG_ERROR([missing required headers])])
+AC_CHECK_HEADERS([unistd.h],     [], [AC_MSG_ERROR([missing required headers])])
 
 
 # check for struct members
