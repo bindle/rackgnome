@@ -106,7 +106,63 @@ int rgu_fs_closestack(struct rgu_file ** fsp)
 }
 
 
-int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_file ** fsp)
+ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
+{
+   ssize_t    len;
+   char     * ptr;
+
+   assert(linep      != NULL);
+   assert(fs         != NULL);
+   assert(delimiter  != 0);
+
+   // rotate unparsed data to begin
+   memmove(fs->buff, &fs->buff[fs->buff_proc], fs->buff_read - fs->buff_proc);
+   fs->buff_read -= fs->buff_proc;
+   fs->buff_proc  = 0;
+
+   // fill buffer from file
+   if ((len = read(fs->fd, &fs->buff[fs->buff_read], (fs->buff_size - fs->buff_read - 1))) < 0)
+   {
+      rgu_fs_perror(fs, "read()");
+      return(-1);
+   };
+   fs->buff_read += (size_t)len;
+
+   // look for next delimitor
+   if ((ptr = index(fs->buff, delimiter)) == NULL)
+   {
+      // verify we are not out of buffer space
+      if (fs->buff_read >= fs->buff_size)
+      {
+         rgu_fs_perror(fs, "buffer too small to read line");
+         return(-1);
+      };
+
+      // assume we are at end of file and update meta data
+      fs->buff[fs->buff_read] = '\0';
+      fs->buff_proc           = fs->buff_read;
+   } else {
+      fs->buff_proc  = (size_t)(ptr - fs->buff + 1);
+      ptr[0]         = '\0';
+   };
+
+   *linep         = fs->buff;
+   fs->line++;
+
+   return((ssize_t)fs->buff_proc);
+}
+
+
+ssize_t rgu_fs_readline(struct rgu_file * fs, char ** linep)
+{
+   assert(linep      != NULL);
+   assert(fs         != NULL);
+   return(rgu_fs_readdelim(fs, linep, '\n'));
+}
+
+
+int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
+   struct rgu_file ** fsp)
 {
    int                 err;
    struct rgu_file   * fs;
@@ -165,7 +221,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags, struct rgu_fil
    {
       fs->buff_size = (size_t)fs->sb.st_blksize * 4;
       if (fs->sb.st_size < (fs->sb.st_blksize * 4))
-         fs->buff_size = (size_t)fs->sb.st_size;
+         fs->buff_size = (size_t)fs->sb.st_size + 1;
       if ((fs->buff = malloc(fs->buff_size)) == NULL)
       {
          rgu_fs_perror(fs, "malloc()");

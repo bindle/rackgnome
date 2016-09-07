@@ -75,9 +75,10 @@ struct rgu_file
    int                 fd;
    int                 padint;
    uint64_t            flags;
-   size_t              line;
-   size_t              buff_size;
-   size_t              buff_pos;
+   size_t              line;        ///< current line number
+   size_t              buff_size;   ///< size of allocated buffer
+   size_t              buff_proc;   ///< length of processed data
+   size_t              buff_read;   ///< length of read data
    struct stat         sb;
    char              * path;
    char              * buff;
@@ -99,10 +100,9 @@ struct rgu_file
 
 int  rgu_fs_close(struct rgu_file ** fsp);
 int  rgu_fs_closestack(struct rgu_file ** fsp);
-ssize_t rgu_fs_getdelim(char ** linep, size_t * linecapp,
-   int delimiter, struct rgu_file * fs);
-ssize_t rgu_fs_getline(char ** linep, size_t * linecapp,
-   struct rgu_file * fs);
+ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep,
+   int delimiter);
+ssize_t rgu_fs_readline(struct rgu_file * fs, char ** linep);
 int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
       struct rgu_file ** fsp);
 void rgu_fs_perror(struct rgu_file * fs, const char * fmt, ...);
