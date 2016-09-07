@@ -48,8 +48,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <syslog.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 #include "file.h"
 
@@ -64,6 +69,7 @@
 #endif
 
 void rgutil_config_free_str(char ** pptr);
+int  rgutil_config_hostname(rgu_cnf * cnf);
 
 
 /////////////////
@@ -80,6 +86,9 @@ void rgu_config_free(rgu_cnf * cnf)
    assert(cnf != NULL);
 
    rgutil_config_free_str(&cnf->prog_name);
+   rgutil_config_free_str(&cnf->hostname);
+   rgutil_config_free_str(&cnf->domainname);
+   rgutil_config_free_str(&cnf->fqdn);
    rgutil_config_free_str(&cnf->cnffile);
    rgutil_config_free_str(&cnf->pidfile);
    rgutil_config_free_str(&cnf->argsfile);
@@ -109,8 +118,87 @@ void rgutil_config_free_str(char ** pptr)
 }
 
 
+int rgutil_config_hostname(rgu_cnf * cnf)
+{
+   int                 err;
+   int                 gai;
+   long                hostlen;
+   char              * host;
+   char              * idx;
+   const char        * cidx;
+   struct addrinfo     hints;
+   struct addrinfo   * info;
+
+   assert(cnf != NULL);
+
+   if ((hostlen = sysconf(_SC_HOST_NAME_MAX)) == -1)
+   {
+      rgu_perror(cnf, "sysconf(_SC_HOST_NAME_MAX)");
+      return(-1);
+   };
+
+   if ((host = malloc((size_t)hostlen)) == NULL)
+   {
+      rgu_perror(cnf, "malloc()");
+      return(-1);
+   };
+
+   if ((err = gethostname(host, (size_t)hostlen)) == -1)
+   {
+      rgu_perror(cnf, "gethostname()");
+      free(host);
+      return(-1);
+   };
+
+   bzero(&hints, sizeof(hints));
+   hints.ai_flags    = AI_CANONNAME|AI_ALL|AI_V4MAPPED;
+   hints.ai_family   = AF_INET6;
+   hints.ai_socktype = SOCK_STREAM;
+
+   if ((gai = getaddrinfo(host, NULL, &hints, &info)) != 0)
+   {
+      rgu_log(cnf, LOG_ERR, "getaddrinfo(): %s", gai_strerror(gai));
+      free(host);
+      return(-1);
+   };
+   free(host);
+
+   if ((cnf->fqdn = strdup(info->ai_canonname)) == NULL)
+   {
+      rgu_perror(cnf, "strdup()");
+      freeaddrinfo(info);
+      return(-1);
+   };
+   freeaddrinfo(info);
+
+   if ((cnf->hostname = strdup(cnf->fqdn)) == NULL)
+   {
+      rgu_perror(cnf, "strdup()");
+      return(-1);
+   };
+
+   if ((idx = index(cnf->hostname, '.')) != NULL)
+      idx[0] = '\0';
+   cidx = idx;
+   if (cidx == NULL)
+      cidx = ".local";
+   if (cidx[1] == '\0')
+      cidx = ".local";
+   cidx++;
+
+   if ((cnf->domainname = strdup(cidx)) == NULL)
+   {
+      rgu_perror(cnf, "strdup()");
+      return(-1);
+   };
+
+   return(0);
+}
+
+
 int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
 {
+   int          err;
    const char * ptr;
 
    assert(cnfp  != NULL);
@@ -139,6 +227,14 @@ int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
          rgu_config_free(*cnfp);
          return(-1);
       };
+   };
+
+
+   // determines hostname of server
+   if ((err = rgutil_config_hostname(*cnfp)) == -1)
+   {
+      rgu_config_free(*cnfp);
+      return(-1);
    };
 
    return(0);

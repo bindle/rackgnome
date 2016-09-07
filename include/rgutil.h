@@ -106,6 +106,9 @@ struct rgu_cnf
    uint8_t          openlog;     ///< indicates wether logs have been initialized
    uint32_t         pad32;
    char           * prog_name;   ///< name of running program
+   char           * hostname;    ///< short host name of server (i.e. "darkstart")
+   char           * domainname;  ///< domain name of server (i.e. "foo.org")
+   char           * fqdn;        ///< fully qualified domain name of server (i.e. "darkstar.foo.org")
    char           * cnffile;     ///< path to configuration file, if not in default location
    char           * pidfile;     ///< path to use when creating PID files
    char           * argsfile;    ///< path to use when greating argument files (i.e. .args)

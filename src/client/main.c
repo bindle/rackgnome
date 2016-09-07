@@ -168,6 +168,10 @@ int main(int argc, char * argv[])
       return(1);
    };
 
+   printf("hostname:    %s\n", cnf->hostname);
+   printf("domainname:  %s\n", cnf->domainname);
+   printf("fqdn:        %s\n", cnf->fqdn);
+
    rgu_config_free(cnf);
 
    return(0);
