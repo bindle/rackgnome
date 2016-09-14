@@ -70,6 +70,7 @@
 
 void rgutil_config_free_str(char ** pptr);
 int  rgutil_config_hostname(rgu_cnf * cnf);
+int rgu_config_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path);
 
 
 /////////////////
@@ -216,17 +217,16 @@ int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
 
 
    // save program name
-   if ((prog_name))
+   if (!(prog_name))
+      prog_name = PACKAGE_TARNAME;
+   if ((ptr = rindex(prog_name, '/')) != NULL)
+      if (ptr[1] != '\0')
+         prog_name = &ptr[1];
+   if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
    {
-      if ((ptr = rindex(prog_name, '/')) != NULL)
-         if (ptr[1] != '\0')
-            prog_name = &ptr[1];
-      if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
-      {
-         rgu_perror(NULL, "strdup()");
-         rgu_config_free(*cnfp);
-         return(-1);
-      };
+      rgu_perror(NULL, "strdup()");
+      rgu_config_free(*cnfp);
+      return(-1);
    };
 
 
@@ -245,23 +245,54 @@ int rgu_config_parse(rgu_cnf * cnf)
 {
    int                 err;
    struct rgu_file   * fs;
-   const char        * path;
 
    assert(cnf != NULL);
 
-   if ((path = cnf->cnffile) == NULL)
-      path = PKGCONFDIR "/" PACKAGE_TARNAME ".conf";
+   if (cnf->cnffile == NULL)
+   {
+      if ((cnf->cnffile = strdup(PKGCONFDIR "/" PACKAGE_TARNAME ".conf")) == NULL)
+      {
+         rgu_perror(NULL, "strdup(" PKGCONFDIR "/" PACKAGE_TARNAME ".conf)");
+         return(-1);
+      };
+   };
 
-   rgu_debug(cnf, RGU_DCONF, "opening file \"%s\"", path);
    fs = NULL;
-   if ((err = rgu_fs_open(cnf, path, 0, &fs)) != 0)
+   if ((err = rgu_config_parse_file(cnf, &fs, cnf->cnffile)) == -1)
+      return(-1);
+
+   return(0);
+}
+
+
+int rgu_config_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
+{
+   int                 err;
+   struct rgu_file   * fs;
+   ssize_t             len;
+   char              * line;
+
+   assert(cnf  != NULL);
+   assert(fsp  != NULL);
+   assert(path != NULL);
+
+   rgu_debug(cnf, RGU_DCONF, "opening file \"%s\"", cnf->cnffile);
+   fs = NULL;
+   if ((err = rgu_fs_open(cnf, cnf->cnffile, 0, fsp)) != 0)
    {
       rgu_fs_closestack(&fs);
       return(-1);
    };
+   fs = *fsp;
 
-   rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", path);
-   rgu_fs_closestack(&fs);
+   while ((len = rgu_fs_readline(fs, &line)) > 0)
+   {
+      printf("line %zu: %s\n", fs->line, line);
+   };
+   printf("\n");
+
+   rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", cnf->cnffile);
+   rgu_fs_closestack(fsp);
 
    return(0);
 }

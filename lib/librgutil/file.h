@@ -100,6 +100,7 @@ struct rgu_file
 
 int  rgu_fs_close(struct rgu_file ** fsp);
 int  rgu_fs_closestack(struct rgu_file ** fsp);
+ssize_t rgu_fs_read(struct rgu_file * fs);
 ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep,
    int delimiter);
 ssize_t rgu_fs_readline(struct rgu_file * fs, char ** linep);

@@ -106,16 +106,13 @@ int rgu_fs_closestack(struct rgu_file ** fsp)
 }
 
 
-ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
+ssize_t rgu_fs_read(struct rgu_file * fs)
 {
    ssize_t    len;
-   char     * ptr;
 
-   assert(linep      != NULL);
    assert(fs         != NULL);
-   assert(delimiter  != 0);
 
-   // rotate unparsed data to begin
+   // rotate processed data to begin
    memmove(fs->buff, &fs->buff[fs->buff_proc], fs->buff_read - fs->buff_proc);
    fs->buff_read -= fs->buff_proc;
    fs->buff_proc  = 0;
@@ -127,6 +124,22 @@ ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
       return(-1);
    };
    fs->buff_read += (size_t)len;
+
+   return(len);
+}
+
+
+ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
+{
+   ssize_t    len;
+   char     * ptr;
+
+   assert(linep      != NULL);
+   assert(fs         != NULL);
+   assert(delimiter  != 0);
+
+   if ((len = rgu_fs_read(fs)) == -1)
+      return(-1);
 
    // look for next delimitor
    if ((ptr = index(fs->buff, delimiter)) == NULL)
@@ -155,9 +168,39 @@ ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
 
 ssize_t rgu_fs_readline(struct rgu_file * fs, char ** linep)
 {
+   ssize_t  len;
+
    assert(linep      != NULL);
    assert(fs         != NULL);
-   return(rgu_fs_readdelim(fs, linep, '\n'));
+
+   if ((len = rgu_fs_readdelim(fs, linep, '\n')) == -1)
+      return(-1);
+
+   while(len > 0)
+   {
+      switch((*linep)[0])
+      {
+         case '\0':
+         case '#':
+         case '\n':
+         len = rgu_fs_readdelim(fs, linep, '\n');
+         break;
+
+         case ' ':
+         case '\t':
+         case '\r':
+         len--;
+         (*linep)++;
+         break;
+
+         default:
+         return(len);
+      };
+      if (len == 0)
+         len = rgu_fs_readdelim(fs, linep, '\n');
+   };
+
+   return(len);
 }
 
 
