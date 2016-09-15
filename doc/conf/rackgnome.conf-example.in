@@ -1,0 +1,130 @@
+#
+#  Rack Gnome
+#  Network Management Framework
+#
+#  This is the main Rack Gnome configuration file.  This file is composed of
+#  global options followed by sections for each subsystem being configured.
+#  If a subsystem section is not defined, the subsystem process will not be
+#  enableed.  Each subsystem section is composed of a section line followed
+#  by subsystem specific options.  A section line has an opening bracket,
+#  subsystem name, and closing bracket (i.e.  "[subsystem]") and ends at
+#  either the next subsystem section line or the end of the file.
+#
+#  Strings can be quoted with either single quotes or double quotes. Strings
+#  within single quotes will not be expanded.  Strings within double quotes
+#  can make use of the following keyword expansion:
+#
+#     \\   expands to ‘\’
+#     \"   expands to ‘"’
+#     \n   expands to a newline
+#     \t   expands to a tab
+#     \d   expands to domain name
+#     \h   expands to hostname
+#     \f   expands to fully qualified hostname
+#     \p   expands to PID
+#     \P   expands to the sub-system name (dispatcher, poller, rackgnome)
+#
+#  Comments can be created using either C, C++, or shell style comments.
+#
+#  Additional files can be included using the "include <pattern>" config
+#  directive.
+#
+#  Rack Gnome sub-systems include:
+#     dispatcher     - schedules SNMP polls, service, probes, etc
+#     snmp_poller    - polls a device via SNMP
+#     service_probe  - probes services on a device
+#     proxy          - proxies queries from DB to clients
+#     cache          - caches data
+#
+
+
+#
+# troubleshooting options
+#
+
+
+#  Set the `foreground` option to "yes" to prevent the Rack Gnome daemon from
+#  forking to the background.  The daemon will still change its UID/GID and
+#  create state files when running in foreground.  The default is to fork
+#  the daemon as a background process.
+foreground no
+
+
+#  Set the `debuglevel` option to a numeric value to enable debug messages. If
+#  the `debuglevel` is set to "0", then minimal information will be logged.
+#  The following values can be ORed together to create a custom `debuglevel`:
+#
+#    -1   any       enable all debug levels
+#     0   none      no debugging
+#     1   config    configuration file processing
+#     2   process   process messages
+#     4   thread    thread management
+#     8   conn      connection management
+#    16   probe     SNMP/checks/etc tracing
+#    32   cache     cache tracing
+#    64   db        database tracing
+#   128   gold      goldogrin tracing
+#
+debuglevel config+process+thread+conn
+
+
+#
+# Logging
+#
+
+
+#  Rack Gnome is able to use either syslog syslog or direct file logging.  Set
+#  the `logtype` option to "syslog" to enable syslog or to "file" to enable
+#  direct file logging.  The default is to use syslog.
+logtype        syslog
+logfile        /var/log/rackgnome.log
+logfacility    daemon
+
+
+# state files
+pidfile  "/var/run/rackgnome/rackgnome.pid"
+argsfile	"/var/run/rackgnome/rackgnome.args"
+sockfile	"/var/run/rackgnome/rackgnome.sock"
+
+# perms
+user		daemon
+group		daemon
+
+# modules
+modulePath	/usr/libexec/rackgnome/
+loadModule	mod_pgsql.so pgsql
+loadModule	mod_files.so files
+loadModule	mod_rrdtool.so rrdtool
+
+
+# poll/probe timing
+#
+#  timesliceInterval * timesliceCount = scheduler range
+#  60s * 20 time slices = 1,200s scheduler range
+#                       =    20m scheduler range
+timesliceInterval	60s   # suffixes include seconds (s), minutes (m), and hours (h)
+timesliceCount		20
+timesliceJobs		-1
+
+
+[module pgsql "core"]
+dbhost      "10.0.0.1"
+dbport      5001
+dbname      "rackgnome"
+dbuser      "rguser"
+dbpass      "password"
+
+
+[module rrdtool "stats"]
+rrdsrv      "127.0.0.1"
+rrdport      42217
+dbname      'rackgnome'
+   dbuser      "rack \\gnome\n \h user"
+   dbpass      "my super \"secret\" password"  # password of rrdtool
+   dbpass      'my super "secret" password'  # password of rrdtool
+
+
+# load sys-system include files
+      include /etc/rackgnome.d/*.conf
+
+# end of config

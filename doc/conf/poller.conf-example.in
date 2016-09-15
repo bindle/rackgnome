@@ -1,0 +1,20 @@
+##
+##
+##  Rack Gnome Poller Subsystem
+##  
+##
+
+[subsystem poller]
+debuglevel     100
+
+
+[subsystem poller snmp]
+threads        2
+hostsPerThread 1000
+timeout        1s
+
+timeslices     200
+interval       50ms
+
+
+# end of config

@@ -1,0 +1,20 @@
+##
+##
+##  Rack Gnome Dispatcher Subsystem
+##  
+##
+
+[process dispatcher]
+
+
+[subsystem dispatcher database]
+
+
+
+[subsystem dispatcher cache]
+name local
+module files
+cachedir "/var/cache/rackgnome/"
+
+
+# end of config
