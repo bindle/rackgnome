@@ -1,0 +1,29 @@
+Rack Gnome Intervals/Throttles
+
++-- Polling Interval (i.e. every 5 min, 15 min, 1 hour, etc)
+|   +-- 5 minutes
+|   +-- 10 minutes
+|   +-- 30 minutes
+|   +-- 1 hour
+|   +-- 12 hour
+|   \-- 1 day
++-- Discovery Interval (i.e. every 1 hour, 1 day, 1 week, etc)
+|   +-- 4 hours
+|   +-- 6 hours
+|   +-- 12 hours
+|   +-- 1 day
+|   \-- 1 week
++-- Polling Request Throttle Rate
+|   +-- Unthrottled
+|   +-- 1/200ms  (   5/sec or 300/min)
+|   +-- 1/500ms  (   2/sec or 120/min)
+|   +-- 1/1000ms (   1/sec or  60/min)
+|   \-- 1/2000ms (0.50/sec or  30/min)
+\-- Discovery Request Throttle Rate
+    +-- Unthrottled
+    +-- 1/200ms  (   5/sec or 300/min)
+    +-- 1/500ms  (   2/sec or 120/min)
+    +-- 1/1000ms (   1/sec or  60/min)
+    \-- 1/2000ms (0.50/sec or  30/min)
+
+

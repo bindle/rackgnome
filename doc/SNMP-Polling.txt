@@ -1,0 +1,55 @@
++--Chassis
+   +--Port
+   |  \--Queue
+   +--ping
+   +--load
+   \--Polling interval
+
++--SNMP
+   +--Discovery
+   |  +--Chassis
+   |  |  +--OS
+   |  |  +--Version
+   |  |  +--Uptime
+   |  |  +--Load
+   |  |  +--DNS Name
+   |  |  |  \--Validate fwd/rev
+   |  |  +--ARP Table
+   |  |  +--MAC Table
+   |  |  +--VLAN Table
+   |  |  \--Model
+   |  \--Port
+   |     +--Port Names
+   |     +--Port Speeds
+   |     +--Port Type
+   |     +--Port Duplex
+   |     +--IPv4 Address
+   |     +--IPv6 Address
+   |     +--MAC  Address
+   |     +--Traffic Policer Limit
+   |     +--Traffic Shaper Limit
+   |     +--Parent Port
+   |     +--Peer Port
+   |     +--Queue
+   |     |  +--Queue Name
+   |     |  \--Queue ID
+   |     \--MTU
+   \--Polling
+      +--Chassis
+      |  +--Last Changed On
+      |  +--Last Updated On
+      |  +--Uptime
+      |  +--Load
+      |  \--Ping
+      +--Port
+      |  +--Octets In
+      |  +--Octets Out
+      |  +--PKT In
+      |  +--PKT Out
+      |  +--Errors In
+      |  +--Errors Out
+      |  +--Dropped In
+      |  \--Dropped Out
+      \--Queue
+         \--dropped
+
