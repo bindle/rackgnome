@@ -73,7 +73,7 @@
 struct rgu_file
 {
    int                 fd;
-   int                 padint;
+   int                 argc;
    uint64_t            flags;
    size_t              line;        ///< current line number
    size_t              buff_size;   ///< size of allocated buffer
@@ -82,6 +82,7 @@ struct rgu_file
    struct stat         sb;
    char              * path;
    char              * buff;
+   char             ** argv;
    struct rgu_file   * prev;
    struct rgu_file   * next;
    struct rgu_file   * top;
@@ -109,6 +110,7 @@ int  rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
 void rgu_fs_perror(struct rgu_file * fs, const char * fmt, ...);
 void rgu_fs_perror_r(struct rgu_file * fs, char * str, size_t size,
       const char * fmt, ...);
+ssize_t rgu_fs_splitline(struct rgu_file * fs, char * line, char *** argvp);
 void rgu_fs_vperror_r(struct rgu_file * fs, char * str, size_t size,
       const char * fmt, va_list args);
 

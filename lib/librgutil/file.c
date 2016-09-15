@@ -54,6 +54,18 @@
 #include <stdarg.h>
 
 
+//////////////////
+//              //
+//  Prototypes  //
+//              //
+//////////////////
+#ifdef __RACKGNOME_PMARK
+#pragma mark - Prototypes
+#endif
+
+int rgu_fs_strexpand(struct rgu_file * fs, char **linep);
+
+
 /////////////////
 //             //
 //  Functions  //
@@ -65,6 +77,7 @@
 
 int rgu_fs_close(struct rgu_file ** fsp)
 {
+   size_t            pos;
    struct rgu_file * fs;
 
    assert(fsp != NULL);
@@ -73,6 +86,13 @@ int rgu_fs_close(struct rgu_file ** fsp)
    *fsp           = (*fsp)->prev;
    if ((*fsp))
       (*fsp)->next   = NULL;
+
+   if ((fs->argv))
+   {
+      for(pos = 0; ((fs->argv[pos])); pos++)
+         free(fs->argv[pos]);
+      free(fs->argv);
+   };
 
    if ((fs->path))   free(fs->path);
    if ((fs->buff))   free(fs->buff);
@@ -120,7 +140,7 @@ ssize_t rgu_fs_read(struct rgu_file * fs)
    // fill buffer from file
    if ((len = read(fs->fd, &fs->buff[fs->buff_read], (fs->buff_size - fs->buff_read - 1))) < 0)
    {
-      rgu_fs_perror(fs, "read()");
+      rgu_fs_perror(fs, "read(): %s", strerror(errno));
       return(-1);
    };
    fs->buff_read += (size_t)len;
@@ -232,7 +252,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
    // copies file name
    if ((fs->path = strdup(path)) == NULL)
    {
-      rgu_perror(cnf, "%s: strdup()", path);
+      rgu_perror(cnf, "%s: strdup(): %s", path);
       rgu_fs_close(&fs);
       return(-1);
    };
@@ -240,7 +260,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
 
    if ((err = stat(path, &fs->sb)) == -1)
    {
-      rgu_fs_perror(fs, "stat()");
+      rgu_fs_perror(fs, "stat(): %s", strerror(errno));
       rgu_fs_close(&fs);
       return(-1);
    };
@@ -267,7 +287,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
          fs->buff_size = (size_t)fs->sb.st_size + 1;
       if ((fs->buff = malloc(fs->buff_size)) == NULL)
       {
-         rgu_fs_perror(fs, "malloc()");
+         rgu_fs_perror(fs, "malloc(): %s", strerror(errno));
          rgu_fs_close(&fs);
          return(-1);
       };
@@ -277,7 +297,7 @@ int rgu_fs_open(rgu_cnf * cnf, const char * path, uint64_t flags,
    // opens file for reading
    if ((fs->fd = open(fs->path, O_RDONLY)) == -1)
    {
-      rgu_fs_perror(fs, "open(O_RDONLY)");
+      rgu_fs_perror(fs, "open(O_RDONLY): %s", strerror(errno));
       rgu_fs_close(&fs);
       return(-1);
    };
@@ -323,6 +343,254 @@ void rgu_fs_perror_r(struct rgu_file * fs, char * str,
    va_end(args);
 
    return;
+}
+
+
+ssize_t rgu_fs_splitline(struct rgu_file * fs, char * line, char *** argvp)
+{
+   int         err;
+   size_t      size;
+   size_t      pos;
+   size_t      len;
+   int         expand;
+   char      * arg;
+
+   assert(fs    != NULL);
+   assert(line  != NULL);
+   assert(argvp != NULL);
+
+   // frees old results
+   if ((fs->argv))
+   {
+      for(pos = 0; ((fs->argv[pos])); pos++)
+         free(fs->argv[pos]);
+      fs->argv[0] = NULL;
+   };
+
+   fs->argc = 0;
+   len      = strlen(line);
+
+   for(pos = 0; pos < len; pos++)
+   {
+      arg      = NULL;
+      expand   = 0;
+
+      switch(line[pos])
+      {
+         case '\0':
+         case '#':
+         return(fs->argc);
+
+         case ' ':
+         case '\t':
+         case '\r':
+         break;
+
+
+         case '\'':
+         pos++;
+         arg   = &line[pos];
+         while(line[++pos] !=  '\'')
+         {
+            if ( (pos >= len) || (line[pos] == '\0') )
+            {
+               rgu_fs_perror(fs, "unterminated quoted string");
+               return(-1);
+            };
+         };
+         line[pos] = '\0';
+         break;
+
+
+         case '"':
+         expand = 1;
+         pos++;
+         arg   = &line[pos];
+         while (line[++pos] !=  '"')
+         {
+            if ( (pos >= len) || (line[pos] == '\0') )
+            {
+               rgu_fs_perror(fs, "unterminated quoted string");
+               return(-1);
+            };
+            if (line[pos] == '\\')
+               pos++;
+         };
+         line[pos] = '\0';
+         break;
+
+
+         default:
+         arg = &line[pos];
+         while( ((line[pos])) && (pos < len) )
+         {
+            pos++;
+            if (line[pos] == '#')
+            {
+               line[pos+1] = '#';
+               line[pos]   = ' ';
+            };
+            if ((line[pos] == ' ') || (line[pos] == '\t'))
+               line[pos] = '\0';
+         };
+         break;
+      };
+
+      if (!(arg))
+         continue;
+
+      size = sizeof(char *) * (size_t)(fs->argc+2);
+      if ((fs->argv = realloc(*argvp, size)) == NULL)
+      {
+         rgu_fs_perror(fs, "realloc(): %s", strerror(errno));
+         return(-1);
+      };
+      fs->argv[fs->argc+1] = NULL;
+      *argvp               = fs->argv;
+
+      if ((fs->argv[fs->argc] = strdup(arg)) == NULL)
+      {
+         rgu_fs_perror(fs, "strdup(): %s", strerror(errno));
+         return(-1);
+      };
+      fs->argc++;
+
+      if (!(expand))
+         continue;
+
+      if ((err = rgu_fs_strexpand(fs, &fs->argv[fs->argc-1])) == -1)
+         return(-1);
+
+   };
+
+   return((ssize_t)fs->argc);
+}
+
+
+int rgu_fs_strexpand(struct rgu_file * fs, char **linep)
+{
+   ssize_t       size;
+   size_t        pos;
+   size_t        len;
+   char        * line;
+   char        * str;
+   char          tmpstr[1024];
+
+   assert(fs      != NULL);
+   assert(linep   != NULL);
+
+   line  = *linep;
+   len   = strlen(line) + 1;
+
+   for(pos = 0; pos < len; pos++)
+   {
+      if (line[pos] != '\\')
+         continue;
+
+      //    \\   expands to ‘\’
+      //    \"   expands to ‘"’
+      //    \n   expands to a newline
+      //    \t   expands to a tab
+      //    \d   expands to domain name
+      //    \h   expands to hostname
+      //    \f   expands to fully qualified hostname
+      //    \p   expands to PID
+      //    \P   expands to the sub-system name (dispatcher, poller, rackgnome)
+      switch(line[pos+1])
+      {
+         case '\\':
+         memmove(&line[pos], &line[pos+1], len-pos-1);
+         break;
+
+         case '"':
+         memmove(&line[pos], &line[pos+1], len-pos-1);
+         break;
+
+         case 'n':
+         memmove(&line[pos], &line[pos+1], len-pos-1);
+         line[pos] = '\n';
+         break;
+
+         case 't':
+         memmove(&line[pos], &line[pos+1], len-pos-1);
+         line[pos] = '\t';
+         break;
+
+         case 'd':
+         line[pos] = '\0';
+         if ((size = asprintf(&str, "%s%s%s", line, fs->cnf->domainname, &line[pos+2])) == -1)
+         {
+            rgu_fs_perror(fs, "asprintf(domainname): %s", strerror(errno));
+            return(-1);
+         };
+         snprintf(str, (size_t)(size+1), "%s%s%s", line, fs->cnf->domainname, &line[pos+2]);
+         free(line);
+         line     = str;
+         *linep   = line;
+         len  = (size_t)size + 1;
+         pos += strlen(fs->cnf->domainname) - 1;
+         break;
+
+         case 'f':
+         line[pos] = '\0';
+         if ((size = asprintf(&str, "%s%s%s", line, fs->cnf->fqdn, &line[pos+2])) == -1)
+         {
+            rgu_fs_perror(fs, "asprintf(fqdn): %s", strerror(errno));
+            return(-1);
+         };
+         snprintf(str, (size_t)(size+1), "%s%s%s", line, fs->cnf->fqdn, &line[pos+2]);
+         free(line);
+         line     = str;
+         *linep   = line;
+         len  = (size_t)size + 1;
+         pos += strlen(fs->cnf->fqdn) - 1;
+         break;
+
+         case 'h':
+         line[pos] = '\0';
+         if ((size = asprintf(&str, "%s%s%s", line, fs->cnf->hostname, &line[pos+2])) == -1)
+         {
+            rgu_fs_perror(fs, "asprintf(hostname): %s", strerror(errno));
+            return(-1);
+         };
+         snprintf(str, (size_t)(size+1), "%s%s%s", line, fs->cnf->hostname, &line[pos+2]);
+         free(line);
+         line     = str;
+         *linep   = line;
+         len  = (size_t)size + 1;
+         pos += strlen(fs->cnf->hostname) - 1;
+         break;
+
+         case 'P':
+         break;
+
+         case 'p':
+         snprintf(tmpstr, sizeof(tmpstr), "%i", getpid());
+         line[pos] = '\0';
+         if ((size = asprintf(&str, "%s%s%s", line, tmpstr, &line[pos+2])) == -1)
+         {
+            rgu_fs_perror(fs, "asprintf(pid): %s", strerror(errno));
+            return(-1);
+         };
+         snprintf(str, (size_t)(size+1), "%s%s%s", line, tmpstr, &line[pos+2]);
+         free(line);
+         line     = str;
+         *linep   = line;
+         len  = (size_t)size + 1;
+         pos += strlen(tmpstr) - 1;
+         break;
+
+         case'\0':
+         rgu_fs_perror(fs, "missing keyword in escape sequence");
+         return(-1);
+
+         default:
+         rgu_fs_perror(fs, "unknown keyword in escape sequence");
+         return(-1);
+      };
+   };
+
+   return(0);
 }
 
 

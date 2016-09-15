@@ -65,7 +65,7 @@
 //              //
 //////////////////
 #ifdef __RACKGNOME_PMARK
-#pragma mark -
+#pragma mark - Prototypes
 #endif
 
 void rgu_cnf_free_str(char ** pptr);
@@ -272,10 +272,16 @@ int rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
    struct rgu_file   * fs;
    ssize_t             len;
    char              * line;
+   ssize_t             pos;
+
+   ssize_t             argc;
+   char              ** argv;
 
    assert(cnf  != NULL);
    assert(fsp  != NULL);
    assert(path != NULL);
+
+   argv = NULL;
 
    rgu_debug(cnf, RGU_DCONF, "opening file \"%s\"", cnf->cnffile);
    fs = NULL;
@@ -289,61 +295,22 @@ int rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
    while ((len = rgu_fs_readline(fs, &line)) > 0)
    {
       printf("line %zu: %s\n", fs->line, line);
+      if ((argc = rgu_fs_splitline(fs, line, &argv)) == -1)
+      {
+         rgu_fs_closestack(fsp);
+         return(-1);
+      };
+      if (!(argc))
+         continue;
+      for (pos = 0; pos < argc; pos++)
+      {
+         printf("   \"%s\"\n", argv[pos]);
+      };
    };
    printf("\n");
 
    rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", cnf->cnffile);
    rgu_fs_closestack(fsp);
-
-   return(0);
-}
-
-ssize_t rgu_cnf_splitline(rgu_cnf * cnf, char * line, char *** argvp)
-{
-   int         argc;
-   size_t      pos;
-   size_t      off;
-   char     ** argv;
-
-   assert(cnf   != NULL);
-   assert(line  != NULL);
-   assert(argvp != NULL);
-
-   argc = 0;
-
-   if ((argv = realloc(*argvp, sizeof(char *))) == NULL)
-   {
-      rgu_perror(cnf, "realloc()");
-      return(-1);
-   };
-   *argvp = argv;
-
-   off = 0;
-   for(pos = 0; pos < strlen(line); pos++)
-   {
-      switch(line[pos])
-      {
-         case '#':
-         break;
-
-         case ' ':
-         case '\t':
-         case '\r':
-         break;
-
-         case '\'':
-         break;
-
-         case '"':
-         break;
-
-         case '\\':
-         break;
-
-         default:
-         break;
-      };
-   };
 
    return(0);
 }
