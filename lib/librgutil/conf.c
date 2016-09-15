@@ -69,6 +69,7 @@
 #endif
 
 void rgu_cnf_free_str(char ** pptr);
+ssize_t rgu_cnf_splitline(rgu_cnf * cnf, char * line, char *** argvp);
 int  rgu_cnf_hostname(rgu_cnf * cnf);
 int  rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path);
 
@@ -178,7 +179,7 @@ int rgu_cnf_hostname(rgu_cnf * cnf)
       return(-1);
    };
 
-   if ((idx = index(cnf->hostname, '.')) != NULL)
+   if ((idx = strchr(cnf->hostname, '.')) != NULL)
       idx[0] = '\0';
    cidx = idx;
    if (cidx == NULL)
@@ -219,7 +220,7 @@ int rgu_cnf_init(rgu_cnf ** cnfp, const char * prog_name)
    // save program name
    if (!(prog_name))
       prog_name = PACKAGE_TARNAME;
-   if ((ptr = rindex(prog_name, '/')) != NULL)
+   if ((ptr = strrchr(prog_name, '/')) != NULL)
       if (ptr[1] != '\0')
          prog_name = &ptr[1];
    if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
@@ -293,6 +294,56 @@ int rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
 
    rgu_debug(cnf, RGU_DCONF, "closing file \"%s\"", cnf->cnffile);
    rgu_fs_closestack(fsp);
+
+   return(0);
+}
+
+ssize_t rgu_cnf_splitline(rgu_cnf * cnf, char * line, char *** argvp)
+{
+   int         argc;
+   size_t      pos;
+   size_t      off;
+   char     ** argv;
+
+   assert(cnf   != NULL);
+   assert(line  != NULL);
+   assert(argvp != NULL);
+
+   argc = 0;
+
+   if ((argv = realloc(*argvp, sizeof(char *))) == NULL)
+   {
+      rgu_perror(cnf, "realloc()");
+      return(-1);
+   };
+   *argvp = argv;
+
+   off = 0;
+   for(pos = 0; pos < strlen(line); pos++)
+   {
+      switch(line[pos])
+      {
+         case '#':
+         break;
+
+         case ' ':
+         case '\t':
+         case '\r':
+         break;
+
+         case '\'':
+         break;
+
+         case '"':
+         break;
+
+         case '\\':
+         break;
+
+         default:
+         break;
+      };
+   };
 
    return(0);
 }

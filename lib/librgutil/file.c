@@ -142,7 +142,7 @@ ssize_t rgu_fs_readdelim(struct rgu_file * fs, char ** linep, int delimiter)
       return(-1);
 
    // look for next delimitor
-   if ((ptr = index(fs->buff, delimiter)) == NULL)
+   if ((ptr = strchr(fs->buff, delimiter)) == NULL)
    {
       // verify we are not out of buffer space
       if (fs->buff_read >= fs->buff_size)
