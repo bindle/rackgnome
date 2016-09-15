@@ -68,9 +68,9 @@
 #pragma mark -
 #endif
 
-void rgutil_config_free_str(char ** pptr);
-int  rgutil_config_hostname(rgu_cnf * cnf);
-int rgu_config_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path);
+void rgu_cnf_free_str(char ** pptr);
+int  rgu_cnf_hostname(rgu_cnf * cnf);
+int  rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path);
 
 
 /////////////////
@@ -82,22 +82,22 @@ int rgu_config_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * pa
 #pragma mark - Functions
 #endif
 
-void rgu_config_free(rgu_cnf * cnf)
+void rgu_cnf_free(rgu_cnf * cnf)
 {
    assert(cnf != NULL);
 
-   rgutil_config_free_str(&cnf->prog_name);
-   rgutil_config_free_str(&cnf->hostname);
-   rgutil_config_free_str(&cnf->domainname);
-   rgutil_config_free_str(&cnf->fqdn);
-   rgutil_config_free_str(&cnf->cnffile);
-   rgutil_config_free_str(&cnf->pidfile);
-   rgutil_config_free_str(&cnf->argsfile);
-   rgutil_config_free_str(&cnf->sockfile);
-   rgutil_config_free_str(&cnf->user_name);
-   rgutil_config_free_str(&cnf->group_name);
-   rgutil_config_free_str(&cnf->pwnam_buff);
-   rgutil_config_free_str(&cnf->grnam_buff);
+   rgu_cnf_free_str(&cnf->prog_name);
+   rgu_cnf_free_str(&cnf->hostname);
+   rgu_cnf_free_str(&cnf->domainname);
+   rgu_cnf_free_str(&cnf->fqdn);
+   rgu_cnf_free_str(&cnf->cnffile);
+   rgu_cnf_free_str(&cnf->pidfile);
+   rgu_cnf_free_str(&cnf->argsfile);
+   rgu_cnf_free_str(&cnf->sockfile);
+   rgu_cnf_free_str(&cnf->user_name);
+   rgu_cnf_free_str(&cnf->group_name);
+   rgu_cnf_free_str(&cnf->pwnam_buff);
+   rgu_cnf_free_str(&cnf->grnam_buff);
 
    bzero(cnf, sizeof(rgu_cnf));
 
@@ -107,7 +107,7 @@ void rgu_config_free(rgu_cnf * cnf)
 }
 
 
-void rgutil_config_free_str(char ** pptr)
+void rgu_cnf_free_str(char ** pptr)
 {
    assert(pptr != NULL);
    if ((*pptr))
@@ -119,7 +119,7 @@ void rgutil_config_free_str(char ** pptr)
 }
 
 
-int rgutil_config_hostname(rgu_cnf * cnf)
+int rgu_cnf_hostname(rgu_cnf * cnf)
 {
    int                 err;
    int                 gai;
@@ -197,7 +197,7 @@ int rgutil_config_hostname(rgu_cnf * cnf)
 }
 
 
-int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
+int rgu_cnf_init(rgu_cnf ** cnfp, const char * prog_name)
 {
    int          err;
    const char * ptr;
@@ -225,15 +225,15 @@ int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
    if (((*cnfp)->prog_name = strdup(prog_name)) == NULL)
    {
       rgu_perror(NULL, "strdup()");
-      rgu_config_free(*cnfp);
+      rgu_cnf_free(*cnfp);
       return(-1);
    };
 
 
    // determines hostname of server
-   if ((err = rgutil_config_hostname(*cnfp)) == -1)
+   if ((err = rgu_cnf_hostname(*cnfp)) == -1)
    {
-      rgu_config_free(*cnfp);
+      rgu_cnf_free(*cnfp);
       return(-1);
    };
 
@@ -241,7 +241,7 @@ int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name)
 }
 
 
-int rgu_config_parse(rgu_cnf * cnf)
+int rgu_cnf_parse(rgu_cnf * cnf)
 {
    int                 err;
    struct rgu_file   * fs;
@@ -258,14 +258,14 @@ int rgu_config_parse(rgu_cnf * cnf)
    };
 
    fs = NULL;
-   if ((err = rgu_config_parse_file(cnf, &fs, cnf->cnffile)) == -1)
+   if ((err = rgu_cnf_parse_file(cnf, &fs, cnf->cnffile)) == -1)
       return(-1);
 
    return(0);
 }
 
 
-int rgu_config_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
+int rgu_cnf_parse_file(rgu_cnf * cnf, struct rgu_file ** fsp, const char * path)
 {
    int                 err;
    struct rgu_file   * fs;

@@ -201,13 +201,13 @@ struct rgu_timeslice
 /// @return If successful, `rgu_config_init()` returns 0. It returns -1 if an
 ///         error was encountered and will record details to the log.
 /// @see rgu_config_free, rgu_config_parse
-_RACKGNOME_F int rgu_config_init(rgu_cnf ** cnfp, const char * prog_name);
+_RACKGNOME_F int rgu_cnf_init(rgu_cnf ** cnfp, const char * prog_name);
 
 
 /// Frees memory and resources used by the configuration struct referenced by `cnf`.
 /// @param[in] cnf         Pointer to the librgutil state data.
 /// @see rgu_config_init
-_RACKGNOME_F void rgu_config_free(rgu_cnf * cnf);
+_RACKGNOME_F void rgu_cnf_free(rgu_cnf * cnf);
 
 
 /// Parses configuration files and applies default values to undefined options.
@@ -215,7 +215,7 @@ _RACKGNOME_F void rgu_config_free(rgu_cnf * cnf);
 /// @return If successful, `rgu_config_init()` returns 0. It returns -1 if an
 ///         error was encountered and will record details to the log.
 /// @see rgu_config_init, rgu_config_free
-_RACKGNOME_F int rgu_config_parse(rgu_cnf * cnf);
+_RACKGNOME_F int rgu_cnf_parse(rgu_cnf * cnf);
 
 
 /**

@@ -110,7 +110,7 @@ int main(int argc, char * argv[])
 
    // initialize Rack Gnome state
    cnf = NULL;
-   if ((err = rgu_config_init(&cnf, argv[0])) == -1)
+   if ((err = rgu_cnf_init(&cnf, argv[0])) == -1)
       return(1);
 
 
@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
          if ((cnf->cnffile = strdup(optarg)) == NULL)
          {
             fprintf(stderr, "%s: out of virtual memory\n", cnf->prog_name);
-            rgu_config_free(cnf);
+            rgu_cnf_free(cnf);
             return(1);
          };
          break;
@@ -151,20 +151,20 @@ int main(int argc, char * argv[])
 
          case '?':
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
-         rgu_config_free(cnf);
+         rgu_cnf_free(cnf);
          return(1);
 
          default:
          fprintf(stderr, "%s: unrecognized option `--%c'\n", cnf->prog_name, c);
          fprintf(stderr, "Try `%s --help' for more information.\n", cnf->prog_name);
-         rgu_config_free(cnf);
+         rgu_cnf_free(cnf);
          return(1);
       };
    };
 
-   if ((err = rgu_config_parse(cnf)) != 0)
+   if ((err = rgu_cnf_parse(cnf)) != 0)
    {
-      rgu_config_free(cnf);
+      rgu_cnf_free(cnf);
       return(1);
    };
 
@@ -172,7 +172,7 @@ int main(int argc, char * argv[])
    printf("domainname:  %s\n", cnf->domainname);
    printf("fqdn:        %s\n", cnf->fqdn);
 
-   rgu_config_free(cnf);
+   rgu_cnf_free(cnf);
 
    return(0);
 }
